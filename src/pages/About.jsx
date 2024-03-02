@@ -8,7 +8,7 @@ export default function About() {
 
     useEffect(() => {
         setHostName(window.location.hostname);
-        axios.post('http://127.0.0.1:8000/second_message')
+        axios.post('http://127.0.0.1:8000/RecognitionApp/secondFunction')
             .then(response => {
                 setMessage(response.data.message);
         })
