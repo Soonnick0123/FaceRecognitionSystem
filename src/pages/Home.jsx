@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react'
+import { FiAlignJustify } from "react-icons/fi";
+import '../App.css';
+import LoadingScreen from '../assets/components/LoadingScreen';
+import SideBar from '../assets/components/SideBar';
 import axios from 'axios';
 
 
@@ -21,12 +25,14 @@ export default function About() {
 
     useEffect(() => {
         secondFunction();
+        setMounted(true);
     }, []);
 
-
-    return(
-        <div>
-            <h2>Home Page</h2>
-        </div>
-    )
+    if(mounted){
+        return(
+            <div className='container'>
+                <SideBar />
+            </div>
+        )
+    }
 }
