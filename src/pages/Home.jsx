@@ -94,7 +94,7 @@ export default function About() {
                         }
 
                         .role {
-                            width: 65%;
+                            width: 60%;
                             position: relative;
                             display: flex;
                             align-items: center;
@@ -149,6 +149,9 @@ export default function About() {
                             width: auto;
                             position: relative;
                             user-select: none;
+                            animation: thirdFadeIn 2s forwards;
+                            animation-delay: 4.2s;
+                            opacity: 0;
 
                             span {
                                 position: absolute;
