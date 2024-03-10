@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import faceidicon from '../icon/faceIdIcon.svg';
 
-const navItems = ["home", "settings", "backup", "mail", "cloud", "layers"];
+// const navItems = ["home", "register", "backup", "mail", "cloud", "layers"];
+const navItems = [
+    {
+        name: "home",
+        icon: "home",
+    },
+    {
+        name: "register",
+        icon: "person_add",
+    },
+    {
+        name: "Recognition",
+        icon: "filter_center_focus",
+    },
+];
+
 
 export default function SideBar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +42,9 @@ export default function SideBar() {
                         left: 0;
                         width: 60px;
                         height: 100%;
-                        background: #29277a;
+                        background: #515889;
                         transition: width 0.4s;
+                        z-index: 999;
                     }
 
                     .sidebar.open {
@@ -120,7 +136,7 @@ export default function SideBar() {
                 `}
             </style>
 
-            <nav className={`sidebar ${isOpen ? "open" : ""}`}>
+            <nav className={`sidebar ${isOpen ? "open" : ""}`} onMouseOver={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
                 <div className="sidebar-inner">
 
                     <header className="sidebar-header">
@@ -139,8 +155,8 @@ export default function SideBar() {
                     <nav className="sidebar-menu">
                     {navItems.map((item) => (
                         <div key={item} type="button" className="sidebar-button">
-                        <span className="material-symbols-outlined">{item}</span>
-                        <p>{item}</p>
+                        <span className="material-symbols-outlined">{item.icon}</span>
+                        <p>{item.name}</p>
                         </div>
                     ))}
                     </nav>

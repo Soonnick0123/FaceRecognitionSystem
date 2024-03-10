@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import LoadingScreen from '../assets/components/LoadingScreen';
+import Illustration from '../assets/illustration/illustation1.png';
+import SideBar from '../assets/components/SideBar';
 
 export default function About() {
     const [message, setMessage] = useState('');
@@ -53,10 +55,34 @@ export default function About() {
                 </Modal> */}
 
                 {loading && <LoadingScreen zIndex={2}/>}
-                <div>
-                    <h1>About Page</h1>
-                    <p>{message}</p>
+
+                <div className='container'>
+                <SideBar />
+
+                <div className='second-container'>
+                    <div style={{width:"50%",height:"100%"}}>
+                        test
+                    </div>
+
+                    <div style={{width:"50%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <img src={Illustration} />
+                    </div>
                 </div>
+
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+
+            </div>
             </>
         );
     }
