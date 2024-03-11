@@ -277,7 +277,7 @@ export default function About() {
 
                 <div className='container'>
                     {loading && <LoadingScreen zIndex={2}/>}
-                    <SideBar />
+                    <SideBar currentPage={'home'} />
 
                     <div className='second-container'>
                         <div className='box'>

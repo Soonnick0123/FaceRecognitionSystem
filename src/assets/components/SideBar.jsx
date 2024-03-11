@@ -18,8 +18,9 @@ const navItems = [
 ];
 
 
-export default function SideBar() {
+export default function SideBar({currentPage = "home"}) {
     const [isOpen, setIsOpen] = useState(false);
+
     return(
         <>
             <style jsx>
@@ -148,15 +149,16 @@ export default function SideBar() {
                         {isOpen ? "close" : "menu"}
                         </span>
                     </div>
+                    
                     <img src={faceidicon} className="sidebar-logo" />
                     <h2 className='logo-text'>Face ID</h2>
                     </header>
 
                     <nav className="sidebar-menu">
                     {navItems.map((item) => (
-                        <div key={item} type="button" className="sidebar-button">
-                        <span className="material-symbols-outlined">{item.icon}</span>
-                        <p>{item.name}</p>
+                        <div key={item} type="button" className="sidebar-button" style={{backgroundColor: item.name==currentPage?"#292c45":"none"}}>
+                            <span className="material-symbols-outlined">{item.icon}</span>
+                            <p>{item.name}</p>
                         </div>
                     ))}
                     </nav>
