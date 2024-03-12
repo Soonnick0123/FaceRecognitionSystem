@@ -62,7 +62,6 @@ export default function About() {
                             h1 {
                                 font-family: 'Poppins';
                                 color: #fff;
-                                font-size: 45px;
                                 -webkit-animation: mainFadeIn 2s forwards;
                                 -o-animation: mainFadeIn 2s forwards;
                                 animation: mainFadeIn 2s forwards;
@@ -94,7 +93,6 @@ export default function About() {
                         }
 
                         .role {
-                            width: 60%;
                             position: relative;
                             display: flex;
                             align-items: center;
@@ -283,10 +281,10 @@ export default function About() {
                         <div className='box'>
                             <div className="title">
                                 <span className="block"></span>
-                                <h1>Face Recognition Authentication<span></span></h1>
+                                <h1 style={{fontSize: window.innerWidth<1700?"30px":"45px"}}>Face Recognition Authentication<span></span></h1>
                             </div>
 
-                            <div className="role">
+                            <div className="role" style={{width: window.innerWidth<1700?"75%":"60%"}}>
                                 <div className="block"></div>
                                 <p>In Customer Relationship Management</p>
                             </div>

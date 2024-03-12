@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import faceidicon from '../icon/faceIdIcon.svg';
 
 // const navItems = ["home", "register", "backup", "mail", "cloud", "layers"];
@@ -20,7 +21,7 @@ const navItems = [
 
 export default function SideBar({currentPage = "home"}) {
     const [isOpen, setIsOpen] = useState(false);
-
+    let navigate = useNavigate();
     return(
         <>
             <style jsx>
@@ -87,6 +88,7 @@ export default function SideBar({currentPage = "home"}) {
                     .sidebar-menu {
                         display: grid;
                         padding: 10px;
+                        gap: 10px;
                     }
 
                     .sidebar-button {
@@ -149,14 +151,14 @@ export default function SideBar({currentPage = "home"}) {
                         {isOpen ? "close" : "menu"}
                         </span>
                     </div>
-                    
+
                     <img src={faceidicon} className="sidebar-logo" />
                     <h2 className='logo-text'>Face ID</h2>
                     </header>
 
                     <nav className="sidebar-menu">
                     {navItems.map((item) => (
-                        <div key={item} type="button" className="sidebar-button" style={{backgroundColor: item.name==currentPage?"#292c45":"none"}}>
+                        <div key={item} type="button" className="sidebar-button" style={{backgroundColor: item.name==currentPage?"#292c45":"none"}} onClick={()=> navigate('/'+item.name)}>
                             <span className="material-symbols-outlined">{item.icon}</span>
                             <p>{item.name}</p>
                         </div>

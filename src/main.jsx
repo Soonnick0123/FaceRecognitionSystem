@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Testing from './pages/Testing.jsx'
 import './index.css'
+import Register from './pages/Register.jsx'
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
         path:'/About',
         element: <About />,
+    },
+    {
+        path:'/Register',
+        element: <Register />,
     }
 ])
 
