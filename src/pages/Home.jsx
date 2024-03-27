@@ -273,15 +273,15 @@ export default function About() {
                     `}
                 </style>
 
-                <div className='container'>
+                <div className='frs-container'>
                     {loading && <LoadingScreen zIndex={2}/>}
                     <SideBar currentPage={'home'} />
 
-                    <div className='second-container'>
+                    <div className='frs-second-container'>
                         <div className='box'>
                             <div className="title">
                                 <span className="block"></span>
-                                <h1 style={{fontSize: window.innerWidth<1700?"30px":"45px"}}>Face Recognition Authentication<span></span></h1>
+                                <h1 style={{fontSize: window.innerWidth<1700?"30px":"45px",fontWeight:"bold"}}>Face Recognition Authentication<span></span></h1>
                             </div>
 
                             <div className="role" style={{width: window.innerWidth<1700?"75%":"60%"}}>
@@ -300,7 +300,7 @@ export default function About() {
                         </div>
                     </div>
 
-                    <ul className="circles">
+                    <ul className="frs-circles">
                         <li></li>
                         <li></li>
                         <li></li>

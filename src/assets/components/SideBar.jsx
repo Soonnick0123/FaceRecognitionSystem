@@ -83,6 +83,9 @@ export default function SideBar({currentPage = "home"}) {
                     .logo-text {
                         color: white;
                         margin-left: 8px;
+                        margin-bottom: 0px;
+                        font-size: 25px;
+                        font-weight: bold;
                     }
 
                     .sidebar-menu {
@@ -160,7 +163,7 @@ export default function SideBar({currentPage = "home"}) {
                     {navItems.map((item) => (
                         <div key={item} type="button" className="sidebar-button" style={{backgroundColor: item.name==currentPage?"#292c45":"none"}} onClick={()=> navigate('/'+item.name)}>
                             <span className="material-symbols-outlined">{item.icon}</span>
-                            <p>{item.name}</p>
+                            <p style={{marginTop:0,marginBottom:0}}>{item.name}</p>
                         </div>
                     ))}
                     </nav>

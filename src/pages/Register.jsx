@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import {Modal, Button, Form} from 'react-bootstrap';
+import { MdAddAPhoto } from "react-icons/md";
 import axios from 'axios';
 import LoadingScreen from '../assets/components/LoadingScreen';
 import SideBar from '../assets/components/SideBar';
@@ -9,6 +11,9 @@ export default function Register() {
     const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
+
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
 
     const secondFunction=()=>{
@@ -63,7 +68,7 @@ export default function Register() {
                                 transition: all 0.5s;
                                 border-radius: 10px;
                                 box-shadow: 0px 6px 15px #0000ff61;
-                                padding: 1rem 3.5rem 1rem 1rem;
+                                padding: 1rem 3rem 1rem 1rem;
 
                                 span {
                                     opacity: 1;
@@ -76,55 +81,78 @@ export default function Register() {
                     `}
                 </style>
 
-                {/* <Modal isOpen={selectMembershipModal} toggle={()=> setSelectMembershipModal(false)}>
-                    <ModalHeader toggle={()=>{setSelectMembershipModal(false)}}>
-                        Set As
-                    </ModalHeader>
-                    <div style={{padding:15,display:"flex",flexDirection:"column",alignItems:"center",borderRadius:5, gap:10}}>
-                        {
-                            staffMembershipList.map((membership)=>{
-                                return(
-                                    <div style={{ width:"100%",background: "rgb(219, 238, 255)",display: "flex",flexDirection: "column",border: "1px solid rgb(0, 105, 217)",borderRadius: "0.3rem",cursor: "pointer"}} onClick={()=>{modifyStaff(membership.id)}}>
-                                        <div style={{display: "flex",flexDirection: "row",gap: "1rem",justifyContent: "center",alignItems: "center",padding: "0.3rem 0.6rem"}}>
-                                            {getMembershipIcon(membership.icon)}
-                                            <div>{membership.title}</div>
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                </Modal> */}
+                <Modal show={registerCustomerModel} onHide={()=> setRegisterCustomerModel(false)} size="lg" aria-labelledby="example-modal-sizes-title-lg">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add Customer</Modal.Title>
+                    </Modal.Header>
 
-                <label for="modal" class="modal-bg"></label>
+                    <Modal.Body>
+                        <div style={{width:"100%",height:"100%",padding:10,display:"flex",flexDirection:"column",gap:10}}>
 
-                <div class="modal-content">
-                    <label for="modal" class="close">
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </label>
-                    <header>
-                        <h2>So This is a Modal</h2>
-                    </header>
-                    <article class="content">
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui.</p>
-                    </article>
-                    <footer>
-                        <a href="https://joshuaward.me" target="_blank" class="button success">Accept</a>
-                        <label for="modal" class="button danger">Decline</label>
-                    </footer>
-                </div>
+                            <Form>
+                                <Form.Group className="mb-3" controlId="photoForm" style={{display:"flex",flexDirection:"column",width:"100%"}}>
+                                    <Form.Label>Take a Photo</Form.Label>
+                                    <MdAddAPhoto style={{width:100,height:100,alignSelf:"center",cursor:"pointer"}}/>
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="Name">
+                                    <Form.Label>Name</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="jack"
+                                        autoFocus
+                                    />
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="email">
+                                    <Form.Label>Email address</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        placeholder="name@example.com"
+                                    />
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="phone">
+                                    <Form.Label>Phone Number</Form.Label>
+                                    <Form.Control
+                                        type="tel"
+                                        placeholder="+60123456789"
+                                    />
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="gender">
+                                    <Form.Label>Gender</Form.Label>
+                                    <select class="form-select" id="genderSelect">
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </Form.Group>
+                            </Form>
+                        </div>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={()=>setRegisterCustomerModel(false)}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={()=>setRegisterCustomerModel(false)}>
+                            Add Customer
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 {loading && <LoadingScreen zIndex={2}/>}
 
-                <div className='container'>
+                <div className='frs-container'>
                 <SideBar currentPage={'register'}/>
 
-                <div className='second-container'>
+                <div className='frs-second-container'>
 
                     <div style={{width:"100%",height:"85%",margin:"4%",background:"white",borderRadius:"20px",display:"flex",flexDirection:"column",padding:25,gap:25}}>
                         <div style={{width:"100%",display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
                             <div style={{fontWeight:"bold",fontSize:"larger",paddingLeft:"10px"}}>Registered Customer</div>
-                            <div className="btn-1">Register<span className="material-symbols-outlined">person_add</span></div>
+
+                            <div className="btn-1" onClick={()=> {setRegisterCustomerModel(true)}}>Add Customer<span className="material-symbols-outlined">person_add</span></div>
                         </div>
 
                         <div style={{width:"100%",height:"90%",display:"grid",overflowY:"auto",padding:10,gridTemplateColumns: "30% 30% 30%",gridTemplateRows: "20% 20% 20%",gridColumnGap:"4%",gridRowGap:"5%"}}>
@@ -244,7 +272,7 @@ export default function Register() {
 
                 </div>
 
-                <ul class="circles">
+                <ul class="frs-circles">
                     <li></li>
                     <li></li>
                     <li></li>
