@@ -148,7 +148,7 @@ export default function Register() {
 
                 <div className='frs-second-container'>
 
-                    <div style={{width:"100%",height:"85%",margin:"4%",background:"white",borderRadius:"20px",display:"flex",flexDirection:"column",padding:25,gap:25}}>
+                    <div style={{width:"100%",height:"85%",margin:"4%",background:"rgba(255, 255, 255, 0.85)",borderRadius:"20px",display:"flex",flexDirection:"column",padding:25,gap:25}}>
                         <div style={{width:"100%",display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
                             <div style={{fontWeight:"bold",fontSize:"larger",paddingLeft:"10px"}}>Registered Customer</div>
 

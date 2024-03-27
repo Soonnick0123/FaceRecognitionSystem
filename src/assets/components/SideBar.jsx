@@ -13,7 +13,7 @@ const navItems = [
         icon: "person_add",
     },
     {
-        name: "Recognition",
+        name: "recognition",
         icon: "filter_center_focus",
     },
 ];

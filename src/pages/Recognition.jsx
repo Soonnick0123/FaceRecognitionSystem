@@ -103,7 +103,7 @@ export default function About() {
                 {loading && <LoadingScreen zIndex={2}/>}
 
                 <div className='frs-container'>
-                <SideBar />
+                <SideBar currentPage={'recognition'}/>
 
                 <div className='frs-second-container'>
                     <div style={{width:"50%",height:"100%"}}>
