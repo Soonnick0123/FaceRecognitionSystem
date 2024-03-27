@@ -102,10 +102,10 @@ export default function About() {
 
                 {loading && <LoadingScreen zIndex={2}/>}
 
-                <div className='container'>
+                <div className='frs-container'>
                 <SideBar />
 
-                <div className='second-container'>
+                <div className='frs-second-container'>
                     <div style={{width:"50%",height:"100%"}}>
                         test
                     </div>
@@ -115,7 +115,7 @@ export default function About() {
                     </div>
                 </div>
 
-                <ul class="circles">
+                <ul class="frs-circles">
                     <li></li>
                     <li></li>
                     <li></li>

@@ -4,10 +4,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
 import Testing from './pages/Testing.jsx'
+import Register from './pages/Register.jsx'
+import Recognition from './pages/Recognition.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
 import './App.css'
-import Register from './pages/Register.jsx'
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
     {
         path:'/Register',
         element: <Register />,
+    },
+    {
+        path:'/Recognition',
+        element: <Recognition />,
     }
 ])
 
