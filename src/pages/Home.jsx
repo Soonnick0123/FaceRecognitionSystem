@@ -296,7 +296,7 @@ export default function About() {
                         </div>
 
                         <div style={{width:"50%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                            <img className='illustration' src={Illustration} style={{userSelect:"none"}}/>
+                            <img className='illustration' src={Illustration} style={{userSelect:"none",maxWidth:"100%"}}/>
                         </div>
                     </div>
 
