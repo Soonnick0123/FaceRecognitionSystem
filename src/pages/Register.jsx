@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
 import { MdAddAPhoto } from "react-icons/md";
 import axios from 'axios';
+import qs from 'qs';
 import LoadingScreen from '../assets/components/LoadingScreen';
 import SideBar from '../assets/components/SideBar';
 import Illustration from '../assets/illustration/illustation1.png';
@@ -12,6 +13,11 @@ export default function Register() {
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [takePhoto, setTakePhoto] = useState(null);
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [gender, setGender] = useState('');
 
     const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
 
@@ -34,10 +40,77 @@ export default function Register() {
         }
     };
 
+    const handleFormSubmit = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('name', );
+        formData.append('email', );
+        formData.append('phone', );
+        formData.append('gender', );
+        if (takePhoto) {
+            formData.append('photo', takePhoto);
+        }
+
+        try {
+            const response = await fetch(`${serverURL}/customerRegister`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert('Success:', result);
+
+            } else {
+                console.error('Error Response:', response);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const registerCustomer=()=> {
+        setLoading(true);
+        console.log(name,email,phone,gender)
+        const payload = {
+            name: name,
+            email: email,
+            phone: phone,
+            gender: gender,
+            photo: takePhoto
+        };
+        axios
+            .post(`${serverURL}/registerCustomer`,qs.stringify(payload),{timeout:15000})
+            .then(async response => {
+                setLoading(false);
+                setName(null);
+                setEmail(null);
+                setGender(null);
+                setTakePhoto(null);
+                alert("Add Customer Success");
+            })
+            .catch(error => {
+                if(error.response){
+                    if (error.response.status == 490) {
+                        alert("Add customer error\n"+error)
+                        setLoading(false);
+                        return
+                    }
+                    else {
+                        alert("Add customer error\n"+error)
+                        setLoading(false);
+                        return
+                    }
+                }
+                alert("Add customer error\n"+error)
+                setLoading(false);
+            });
+    }
 
 
     useEffect(() => {
-        secondFunction();
+        // secondFunction();
         setMounted(true);
     }, []);
 
@@ -118,6 +191,8 @@ export default function Register() {
                                     <Form.Control
                                         type="text"
                                         placeholder="jack"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                         autoFocus
                                     />
                                 </Form.Group>
@@ -127,6 +202,8 @@ export default function Register() {
                                     <Form.Control
                                         type="email"
                                         placeholder="name@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </Form.Group>
 
@@ -135,14 +212,17 @@ export default function Register() {
                                     <Form.Control
                                         type="tel"
                                         placeholder="+60123456789"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
                                     />
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="gender">
                                     <Form.Label>Gender</Form.Label>
-                                    <select class="form-select" id="genderSelect">
-                                        <option>Male</option>
-                                        <option>Female</option>
+                                    <select class="form-select" value={gender} id="genderSelect" onChange={(e) => setGender(e.target.value)}>
+                                        <option value={null}>Select...</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
                                 </Form.Group>
                             </Form>
@@ -153,13 +233,13 @@ export default function Register() {
                         <Button variant="secondary" onClick={()=>setRegisterCustomerModel(false)}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={()=>setRegisterCustomerModel(false)}>
+                        <Button variant="primary" onClick={()=>{registerCustomer();setRegisterCustomerModel(false)}}>
                             Add Customer
                         </Button>
                     </Modal.Footer>
                 </Modal>
 
-                {loading && <LoadingScreen zIndex={2}/>}
+                {loading && <LoadingScreen/>}
 
                 <div className='frs-container'>
                 <SideBar currentPage={'register'}/>
