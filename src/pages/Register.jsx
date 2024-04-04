@@ -41,36 +41,6 @@ export default function Register() {
         }
     };
 
-    const handleFormSubmit = async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData();
-        formData.append('name', );
-        formData.append('email', );
-        formData.append('phone', );
-        formData.append('gender', );
-        if (takePhoto) {
-            formData.append('photo', takePhoto);
-        }
-
-        try {
-            const response = await fetch(`${serverURL}/customerRegister`, {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                alert('Success:', result);
-
-            } else {
-                console.error('Error Response:', response);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
     const registerCustomer=()=> {
         setLoading(true);
         console.log(name,email,phone,gender)
@@ -89,7 +59,8 @@ export default function Register() {
                 setEmail(null);
                 setGender(null);
                 setTakePhoto(null);
-                toastr.success('Add Customer Success', 'Success');
+                setRegisterCustomerModel(false)
+                toastr.success('Add Customer Successful!', 'Success');
             })
             .catch(error => {
                 if(error.response){
@@ -221,7 +192,7 @@ export default function Register() {
                                 <Form.Group className="mb-3" controlId="gender">
                                     <Form.Label>Gender</Form.Label>
                                     <select class="form-select" value={gender} id="genderSelect" onChange={(e) => setGender(e.target.value)}>
-                                        <option value={null}>Select...</option>
+                                        <option value="" disabled>Select...</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
@@ -234,7 +205,15 @@ export default function Register() {
                         <Button variant="secondary" onClick={()=>setRegisterCustomerModel(false)}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={()=>{registerCustomer();setRegisterCustomerModel(false)}}>
+                        <Button variant="primary"
+                            disabled={
+                                !name.trim() ||
+                                !email.trim() ||
+                                !phone.trim() ||
+                                !gender.trim() ||
+                                !takePhoto
+                            }
+                            onClick={()=>{registerCustomer()}}>
                             Add Customer
                         </Button>
                     </Modal.Footer>
