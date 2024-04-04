@@ -6,6 +6,7 @@ import qs from 'qs';
 import LoadingScreen from '../assets/components/LoadingScreen';
 import SideBar from '../assets/components/SideBar';
 import Illustration from '../assets/illustration/illustation1.png';
+import toastr from 'toastr';
 
 export default function Register() {
     const [message, setMessage] = useState('');
@@ -88,7 +89,7 @@ export default function Register() {
                 setEmail(null);
                 setGender(null);
                 setTakePhoto(null);
-                alert("Add Customer Success");
+                toastr.success('Add Customer Success', 'Success');
             })
             .catch(error => {
                 if(error.response){
