@@ -39,7 +39,7 @@ const router = createBrowserRouter([
     }
 ])
 
-// 配置Toastr选项
+// POP UP Message
 toastr.options = {
     closeButton: true, // 显示关闭按钮
     debug: false, // 是否开启debug模式
