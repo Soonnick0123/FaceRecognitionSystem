@@ -161,7 +161,7 @@ export default function SideBar({currentPage = "home"}) {
 
                     <nav className="sidebar-menu">
                     {navItems.map((item) => (
-                        <div key={item} type="button" className="sidebar-button" style={{backgroundColor: item.name==currentPage?"#292c45":"none"}} onClick={()=> navigate('/'+item.name)}>
+                        <div key={item.name} type="button" className="sidebar-button" style={{backgroundColor: item.name==currentPage?"#292c45":"none"}} onClick={()=> navigate('/'+item.name)}>
                             <span className="material-symbols-outlined">{item.icon}</span>
                             <p style={{marginTop:0,marginBottom:0}}>{item.name}</p>
                         </div>

@@ -11,6 +11,7 @@ export default function Register() {
     const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [takePhoto, setTakePhoto] = useState(null);
 
     const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
 
@@ -26,6 +27,14 @@ export default function Register() {
             console.log(error);
         });
     }
+
+    const handlePhotoChange = (event) => {
+        if (event.target.files.length > 0) {
+            setTakePhoto(event.target.files[0]);
+        }
+    };
+
+
 
     useEffect(() => {
         secondFunction();
@@ -92,7 +101,16 @@ export default function Register() {
                             <Form>
                                 <Form.Group className="mb-3" controlId="photoForm" style={{display:"flex",flexDirection:"column",width:"100%"}}>
                                     <Form.Label>Take a Photo</Form.Label>
-                                    <MdAddAPhoto style={{width:100,height:100,alignSelf:"center",cursor:"pointer"}}/>
+                                    {
+                                        takePhoto?
+                                            <img
+                                            src={URL.createObjectURL(takePhoto)}
+                                            style={{maxWidth:"100%",height:150,alignSelf:"center",cursor:"pointer"}}
+                                            onLoad={() => URL.revokeObjectURL(takePhoto)} onClick={()=>document.getElementById('fileInput').click()}/>
+                                        :
+                                            <MdAddAPhoto style={{width:100,height:150,alignSelf:"center",cursor:"pointer"}} onClick={()=>document.getElementById('fileInput').click()}/>
+                                    }
+                                    <input type="file" id="fileInput" style={{display: "none"}} onChange={handlePhotoChange} />
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="Name">
@@ -272,7 +290,7 @@ export default function Register() {
 
                 </div>
 
-                <ul class="frs-circles">
+                <ul className="frs-circles">
                     <li></li>
                     <li></li>
                     <li></li>

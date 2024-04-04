@@ -208,7 +208,7 @@ export default function About() {
                         </div>
                     </div>
 
-                    <ul class="frs-circles">
+                    <ul className="frs-circles">
                         <li></li>
                         <li></li>
                         <li></li>
