@@ -39,16 +39,20 @@ export default function Register() {
     }
 
     const getCustomerList=()=>{
+        setLoading(true)
         axios.post(`${serverURL}/getCustomerList`)
             .then(response => {
                 setCustomerList(response.data.customerList);
+                setLoading(false)
         })
         .catch(error => {
             if(error.response){
                 toastr.error(error, 'Something went Wrong!');
+                setLoading(false)
                 return
             }
             toastr.error(error, 'Something went Wrong!');
+            setLoading(false)
         });
     }
 
@@ -60,7 +64,6 @@ export default function Register() {
 
     const registerCustomer=()=> {
         setLoading(true);
-        console.log(name,email,phone,gender)
 
         const formData = new FormData();
         formData.append("name", name);
@@ -113,12 +116,44 @@ export default function Register() {
             });
     }
 
+    const deleteCustomer=(customerId)=> {
+        setLoading(true);
+        const payload = {
+            customerId: customerId
+        };
+        axios
+            .post(`${serverURL}/deleteCustomer`,qs.stringify(payload),{timeout:15000})
+            .then(async response => {
+                getCustomerList();
+                setLoading(false);
+                toastr.success('Delete Customer Successful!', 'Success');
+            })
+            .catch(error => {
+                if(error.response){
+                    if (error.response.status == 460) {
+                        toastr.error("Customer not exist!", 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                    else if (error.response.status == 500) {
+                        toastr.error(error.response.data.error, 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                    else {
+                        toastr.error(error, 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                }
+                toastr.error(error, 'Something went Wrong!');
+                setLoading(false)
+            });
+    }
+
 
     useEffect(() => {
-        // secondFunction();
-        setLoading(true);
         getCustomerList();
-        setLoading(false);
         setMounted(true);
     }, []);
 
@@ -273,118 +308,37 @@ export default function Register() {
 
                         <div style={{width:"100%",height:"90%",display:"grid",overflowY:"auto",padding:10,gridTemplateColumns: "30% 30% 30%",gridTemplateRows: "20% 20% 20%",gridColumnGap:"4%",gridRowGap:"5%"}}>
 
-                            <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                <img src={Illustration} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center"}}/>
-                                <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
-                                        Name
-                                    </div>
+                            {
+                                customerList &&
+                                    customerList.map((customer)=>{
+                                        return(
+                                            <div key={customer.id} style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
+                                                <img src={customer.photo} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center", objectFit:"cover"}}/>
+                                                <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
+                                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
+                                                        {customer.name}
+                                                    </div>
 
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Email
-                                    </div>
+                                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
+                                                        {customer.email}
+                                                    </div>
 
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Phone
-                                    </div>
+                                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
+                                                        {customer.phone}
+                                                    </div>
 
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Gender
-                                    </div>
+                                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
+                                                        {customer.gender}
+                                                    </div>
 
-                                </div>
-                                <div style={{height:"100%",display:"flex",alignItems:"center",paddingRight:10}}>
-                                    <IoPersonRemove style={{color:"red",width:30,height:"auto",cursor:"pointer"}}/>
-                                </div>
-                            </div>
-
-                            <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                <img src={Illustration} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center"}}/>
-                                <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
-                                        Name
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Email
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Phone
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Gender
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                <img src={Illustration} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center"}}/>
-                                <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
-                                        Name
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Email
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Phone
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Gender
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                <img src={Illustration} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center"}}/>
-                                <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
-                                        Name
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Email
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Phone
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Gender
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                <img src={Illustration} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center"}}/>
-                                <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
-                                        Name
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Email
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Phone
-                                    </div>
-
-                                    <div style={{width:"100%",display:"flex",flexDirection:"row",fontSize:"small"}}>
-                                        Gender
-                                    </div>
-
-                                </div>
-                            </div>
+                                                </div>
+                                                <div style={{height:"100%",display:"flex",alignItems:"center",paddingRight:10}}>
+                                                    <IoPersonRemove style={{color:"red",width:30,height:"auto",cursor:"pointer"}} onClick={()=>deleteCustomer(customer.id)}/>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                            }
 
                         </div>
                     </div>
