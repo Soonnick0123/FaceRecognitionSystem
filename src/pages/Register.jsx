@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
 import { MdAddAPhoto } from "react-icons/md";
+import { IoPersonRemove } from "react-icons/io5";
 import axios from 'axios';
 import qs from 'qs';
 import LoadingScreen from '../assets/components/LoadingScreen';
@@ -13,12 +14,14 @@ export default function Register() {
     const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [takePhoto, setTakePhoto] = useState(null);
+    const [customerList, setCustomerList] = useState([]);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [gender, setGender] = useState('');
+    const [takePhoto, setTakePhoto] = useState(null);
+
 
     const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
 
@@ -35,6 +38,20 @@ export default function Register() {
         });
     }
 
+    const getCustomerList=()=>{
+        axios.post(`${serverURL}/getCustomerList`)
+            .then(response => {
+                setCustomerList(response.data.customerList);
+        })
+        .catch(error => {
+            if(error.response){
+                toastr.error(error, 'Something went Wrong!');
+                return
+            }
+            toastr.error(error, 'Something went Wrong!');
+        });
+    }
+
     const handlePhotoChange = (event) => {
         if (event.target.files.length > 0) {
             setTakePhoto(event.target.files[0]);
@@ -44,38 +61,54 @@ export default function Register() {
     const registerCustomer=()=> {
         setLoading(true);
         console.log(name,email,phone,gender)
-        const payload = {
-            name: name,
-            email: email,
-            phone: phone,
-            gender: gender,
-            photo: takePhoto
-        };
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("phone", phone);
+        formData.append("gender", gender);
+        formData.append("photo", takePhoto);
+
         axios
-            .post(`${serverURL}/registerCustomer`,qs.stringify(payload),{timeout:15000})
+            .post(`${serverURL}/registerCustomer`,formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },timeout:15000})
             .then(async response => {
-                setLoading(false);
-                setName(null);
-                setEmail(null);
-                setGender(null);
+                setName('');
+                setEmail('');
+                setGender('');
+                setPhone('');
                 setTakePhoto(null);
-                setRegisterCustomerModel(false)
+                setRegisterCustomerModel(false);
+                getCustomerList();
+                setLoading(false);
                 toastr.success('Add Customer Successful!', 'Success');
             })
             .catch(error => {
                 if(error.response){
-                    if (error.response.status == 490) {
-                        alert("Add customer error\n"+error)
+                    if (error.response.status == 460) {
+                        toastr.error("This email have been existed!", 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                    else if (error.response.status == 490) {
+                        toastr.error("Invalid Email", 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                    else if (error.response.status == 420) {
+                        toastr.error(error.response.data.error, 'Something went Wrong!');
                         setLoading(false);
                         return
                     }
                     else {
-                        alert("Add customer error\n"+error)
+                        toastr.error(error, 'Something went Wrong!');
                         setLoading(false);
                         return
                     }
                 }
-                alert("Add customer error\n"+error)
+                toastr.error(error, 'Something went Wrong!');
                 setLoading(false);
             });
     }
@@ -83,6 +116,9 @@ export default function Register() {
 
     useEffect(() => {
         // secondFunction();
+        setLoading(true);
+        getCustomerList();
+        setLoading(false);
         setMounted(true);
     }, []);
 
@@ -151,9 +187,11 @@ export default function Register() {
                                             <img
                                             src={URL.createObjectURL(takePhoto)}
                                             style={{maxWidth:"100%",height:150,alignSelf:"center",cursor:"pointer"}}
-                                            onLoad={() => URL.revokeObjectURL(takePhoto)} onClick={()=>document.getElementById('fileInput').click()}/>
+                                            onLoad={() => URL.revokeObjectURL(takePhoto)}
+                                            onClick={()=>document.getElementById('fileInput').click()}/>
                                         :
-                                            <MdAddAPhoto style={{width:100,height:150,alignSelf:"center",cursor:"pointer"}} onClick={()=>document.getElementById('fileInput').click()}/>
+                                            <MdAddAPhoto style={{width:100,height:150,alignSelf:"center",cursor:"pointer"}}
+                                            onClick={()=>document.getElementById('fileInput').click()}/>
                                     }
                                     <input type="file" id="fileInput" style={{display: "none"}} onChange={handlePhotoChange} />
                                 </Form.Group>
@@ -193,8 +231,8 @@ export default function Register() {
                                     <Form.Label>Gender</Form.Label>
                                     <select class="form-select" value={gender} id="genderSelect" onChange={(e) => setGender(e.target.value)}>
                                         <option value="" disabled>Select...</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
                                     </select>
                                 </Form.Group>
                             </Form>
@@ -254,6 +292,9 @@ export default function Register() {
                                         Gender
                                     </div>
 
+                                </div>
+                                <div style={{height:"100%",display:"flex",alignItems:"center",paddingRight:10}}>
+                                    <IoPersonRemove style={{color:"red",width:30,height:"auto",cursor:"pointer"}}/>
                                 </div>
                             </div>
 
