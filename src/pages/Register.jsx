@@ -64,6 +64,7 @@ export default function Register() {
 
     const registerCustomer=()=> {
         setLoading(true);
+        console.log(takePhoto);
 
         const formData = new FormData();
         formData.append("name", name);
@@ -78,11 +79,7 @@ export default function Register() {
                     'Content-Type': 'multipart/form-data',
                 },timeout:15000})
             .then(async response => {
-                setName('');
-                setEmail('');
-                setGender('');
-                setPhone('');
-                setTakePhoto(null);
+                resetInfo();
                 setRegisterCustomerModel(false);
                 getCustomerList();
                 setLoading(false);
@@ -114,6 +111,14 @@ export default function Register() {
                 toastr.error(error, 'Something went Wrong!');
                 setLoading(false);
             });
+    }
+
+    const resetInfo=()=> {
+        setName('');
+        setEmail('');
+        setGender('');
+        setPhone('');
+        setTakePhoto(null);
     }
 
     const deleteCustomer=(customerId)=> {
@@ -151,10 +156,22 @@ export default function Register() {
             });
     }
 
+    const openWebcamWindow = () => {
+        const webcamWindow = window.open('/webcam', 'webcamWindow', 'width=800,height=588');
+        // '/webcam' is the route path
+        // 'webcamWindow' is the name of the window
+      };
 
     useEffect(() => {
         getCustomerList();
+
+        window.receivePhotoFromWebcam = (photoData) => {
+            setTakePhoto(photoData);
+        };
         setMounted(true);
+        return () => {
+            delete window.receivePhotoFromWebcam;
+        }
     }, []);
 
     if(mounted){
@@ -220,15 +237,18 @@ export default function Register() {
                                     {
                                         takePhoto?
                                             <img
-                                            src={URL.createObjectURL(takePhoto)}
+                                            // src={URL.createObjectURL(takePhoto)} //open if using file input
+                                            src={takePhoto} // open if using web cam
                                             style={{maxWidth:"100%",height:150,alignSelf:"center",cursor:"pointer"}}
                                             onLoad={() => URL.revokeObjectURL(takePhoto)}
-                                            onClick={()=>document.getElementById('fileInput').click()}/>
+                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
+                                            onClick={()=>openWebcamWindow()}/> // open if using web cam
                                         :
                                             <MdAddAPhoto style={{width:100,height:150,alignSelf:"center",cursor:"pointer"}}
-                                            onClick={()=>document.getElementById('fileInput').click()}/>
+                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
+                                            onClick={()=>openWebcamWindow()}/> // open if using web cam
                                     }
-                                    <input type="file" id="fileInput" style={{display: "none"}} onChange={handlePhotoChange} />
+                                    {/* <input type="file" id="fileInput" style={{display: "none"}} onChange={handlePhotoChange} /> open if using file input*/}
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="Name">
@@ -275,7 +295,7 @@ export default function Register() {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={()=>setRegisterCustomerModel(false)}>
+                        <Button variant="secondary" onClick={()=>{setRegisterCustomerModel(false);resetInfo()}}>
                             Close
                         </Button>
                         <Button variant="primary"

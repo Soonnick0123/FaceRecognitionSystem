@@ -6,6 +6,7 @@ import About from './pages/About'
 import Testing from './pages/Testing.jsx'
 import Register from './pages/Register.jsx'
 import Recognition from './pages/Recognition.jsx'
+import WebcamPage from './pages/WebcamPage.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'toastr/build/toastr.min.css';
 import './index.css'
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
     {
         path:'/recognition',
         element: <Recognition />,
+    },
+    {
+        path:'/webcam',
+        element: <WebcamPage />,
     }
 ])
 
