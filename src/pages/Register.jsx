@@ -64,7 +64,6 @@ export default function Register() {
 
     const registerCustomer=()=> {
         setLoading(true);
-        console.log(takePhoto);
 
         const formData = new FormData();
         formData.append("name", name);
@@ -157,7 +156,7 @@ export default function Register() {
     }
 
     const openWebcamWindow = () => {
-        const webcamWindow = window.open('/webcam', 'webcamWindow', 'width=800,height=588');
+        const webcamWindow = window.open('/webcam', 'webcamWindow', 'width=950,height=530');
         // '/webcam' is the route path
         // 'webcamWindow' is the name of the window
       };

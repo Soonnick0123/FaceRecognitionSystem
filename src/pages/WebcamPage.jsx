@@ -4,6 +4,7 @@ import * as faceapi from 'face-api.js';
 
 const WebcamPage = () => {
     const webcamRef = useRef(null);
+    const canvasRef = useRef(null);
     const [initialTime, setInitialTime] = useState(null);
 
     const videoConstraints = {
@@ -21,52 +22,70 @@ const WebcamPage = () => {
     };
 
     useEffect(() => {
+        let countdown = 3;
+        let countdownStarted = false;
+        let timeoutId = null;
+
         const loadModels = async () => {
-            console.log(faceapi.nets)
-            // await faceapi.nets.mtcnn.load('/models');
-            // await faceapi.loadMtcnnModel('/models');
-            // await faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
-            // await faceapi.nets.mtcnn.loadFromUri('/models');
-            // await faceapi.nets.ssdMobilenetv1.load('/models');
+            console.log('Loading models...');
             await faceapi.loadTinyFaceDetectorModel('/models');
-            // const MODEL_URL = process.env.PUBLIC_URL + '/models';
-            // await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL)
-            // await faceapi.nets.loadTinyFaceDetectorModel.loadFromDisk('./models')
-        //   await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+            console.log('Models loaded successfully.');
         };
 
-        loadModels();
-        let timeoutId;
-        let countdown = 5; // 初始倒计时时间为 5 秒
-        const intervalId = setInterval(async () => {
-            if (!webcamRef.current) return;
-            const video = webcamRef.current.video;
-            const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
-            console.log(detections)
-            if (detections.length > 0) {
-                if (!timeoutId) {
-                    // 如果没有设置过定时器，则设置一个在 5 秒后触发的定时器
-                    timeoutId = setInterval(() => {
-                        countdown -= 1;
-                        console.log(countdown);
-                        if (countdown === 0) {
-                            clearInterval(timeoutId);
-                            capturePhoto();
-                            clearInterval(intervalId);
-                        }
-                    }, 1000);
-                    console.log('Countdown started');
-                }
-            } else {
-                // 如果没有检测到人脸，则取消定时器
-                clearInterval(timeoutId);
-                timeoutId = null;
-                countdown = 5;
-                console.log('Countdown stopped');
-            }
-        }, 1000);
+        const video = webcamRef.current.video;
+        const canvas = canvasRef.current;
+        // const displaySize = faceapi.matchDimensions(canvas, { width: video.videoWidth, height: video.videoHeight });
+        const displaySize = { width: video.offsetWidth, height: video.offsetHeight };
+        faceapi.matchDimensions(canvas, displaySize);
 
-        return () => clearInterval(intervalId); // Clean up
+        const detectAndDraw = async () => {
+            if (!webcamRef.current || !canvasRef.current) return;
+
+            if (video.readyState >= 4) {
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+                // 清除上一帧的绘制
+                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+                if (detections.length > 0) {
+                    if (!countdownStarted) {
+                        countdownStarted = true;
+
+                        // 每秒更新倒计时并重新检测人脸
+                        timeoutId = setInterval(() => {
+                            if (countdown > 0) {
+                                countdown -= 1;
+                                console.log(countdown);
+                            } else {
+                                clearInterval(timeoutId);
+                                capturePhoto();
+                                countdown = 3;
+                                countdownStarted = false;
+                                console.log('Photo captured');
+                            }
+                        }, 1000);
+                    }
+                    // 绘制边界框
+                    faceapi.draw.drawDetections(canvas, resizedDetections);
+                } else {
+                    // 如果没有检测到人脸，重置倒计时和状态
+                    if (countdownStarted) {
+                        clearInterval(timeoutId);
+                        countdown = 3;
+                        countdownStarted = false;
+                        console.log('Countdown reset');
+                    }
+                }
+            }
+            // 请求下一帧
+            requestAnimationFrame(detectAndDraw);
+        };
+
+        loadModels().then(detectAndDraw);
+        return () => {
+            clearInterval(timeoutId); // 清理定时器
+        };
     }, []);
 
     return (
@@ -75,8 +94,18 @@ const WebcamPage = () => {
                 ref={webcamRef}
                 audio={false}
                 screenshotFormat="image/png"
-                style={{ width: "100%", height: "auto" }}
+                style={{ width: "100%", height: "100%" }}
                 videoConstraints={videoConstraints}
+            />
+            <canvas
+                ref={canvasRef}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%"
+                }}
             />
             {/* <button onClick={capturePhoto}>Capture Photo</button> */}
         </div>
