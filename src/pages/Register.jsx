@@ -16,16 +16,20 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const [customerList, setCustomerList] = useState([]);
 
+    const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [gender, setGender] = useState('');
-    const [takePhoto, setTakePhoto] = useState(null);
+    const [takePhoto1, setTakePhoto1] = useState(null);
+    const [takePhoto2, setTakePhoto2] = useState(null);
+    const [takePhoto3, setTakePhoto3] = useState(null);
 
 
     const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
 
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
+    let webcamWindow = null;
 
     const secondFunction=()=>{
         setHostName(window.location.hostname);
@@ -43,6 +47,7 @@ export default function Register() {
         axios.post(`${serverURL}/getCustomerList`)
             .then(response => {
                 setCustomerList(response.data.customerList);
+                // console.log(response.data.customerList);
                 setLoading(false)
         })
         .catch(error => {
@@ -58,7 +63,7 @@ export default function Register() {
 
     const handlePhotoChange = (event) => {
         if (event.target.files.length > 0) {
-            setTakePhoto(event.target.files[0]);
+            setTakePhoto1(event.target.files[0]);
         }
     };
 
@@ -66,11 +71,14 @@ export default function Register() {
         setLoading(true);
 
         const formData = new FormData();
+        formData.append("username", username)
         formData.append("name", name);
         formData.append("email", email);
         formData.append("phone", phone);
         formData.append("gender", gender);
-        formData.append("photo", takePhoto);
+        formData.append("photo1", takePhoto1);
+        formData.append("photo2", takePhoto2);
+        formData.append("photo3", takePhoto3);
 
         axios
             .post(`${serverURL}/registerCustomer`,formData, {
@@ -96,6 +104,11 @@ export default function Register() {
                         setLoading(false);
                         return
                     }
+                    else if (error.response.status == 440) {
+                        toastr.error("Invalid Username", 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
                     else if (error.response.status == 420) {
                         toastr.error(error.response.data.error, 'Something went Wrong!');
                         setLoading(false);
@@ -113,11 +126,14 @@ export default function Register() {
     }
 
     const resetInfo=()=> {
+        setUsername('');
         setName('');
         setEmail('');
         setGender('');
         setPhone('');
-        setTakePhoto(null);
+        setTakePhoto1(null);
+        setTakePhoto2(null);
+        setTakePhoto3(null);
     }
 
     const deleteCustomer=(customerId)=> {
@@ -155,17 +171,29 @@ export default function Register() {
             });
     }
 
-    const openWebcamWindow = () => {
-        const webcamWindow = window.open('/webcam', 'webcamWindow', 'width=950,height=530');
-        // '/webcam' is the route path
-        // 'webcamWindow' is the name of the window
-      };
+    const webcamWindowControl = (control) => {
+        if (control === "open" && !webcamWindow) {
+            webcamWindow = window.open('/webcam', 'webcamWindow', 'width=950,height=530');
+        } else if (control === "close" && webcamWindow) {
+            webcamWindow.close();
+            webcamWindow = null;
+        }
+    };
 
     useEffect(() => {
         getCustomerList();
 
-        window.receivePhotoFromWebcam = (photoData) => {
-            setTakePhoto(photoData);
+        window.receivePhotoFromWebcam = (photoData,photoNumber) => {
+            console.log("number:",photoNumber)
+            if (photoNumber === 0) {
+                setTakePhoto1(photoData);
+            }
+            else if (photoNumber === 1) {
+                setTakePhoto2(photoData);
+            }
+            else if (photoNumber === 2) {
+                setTakePhoto3(photoData);
+            }
         };
         setMounted(true);
         return () => {
@@ -222,7 +250,7 @@ export default function Register() {
                     `}
                 </style>
 
-                <Modal show={registerCustomerModel} onHide={()=> setRegisterCustomerModel(false)} size="lg" aria-labelledby="example-modal-sizes-title-lg">
+                <Modal show={registerCustomerModel} onHide={()=> {setRegisterCustomerModel(false);resetInfo();webcamWindowControl("close")}} size="lg" aria-labelledby="example-modal-sizes-title-lg">
                     <Modal.Header closeButton>
                         <Modal.Title>Add Customer</Modal.Title>
                     </Modal.Header>
@@ -233,21 +261,57 @@ export default function Register() {
                             <Form>
                                 <Form.Group className="mb-3" controlId="photoForm" style={{display:"flex",flexDirection:"column",width:"100%"}}>
                                     <Form.Label>Take a Photo</Form.Label>
+                                    <div style={{display:"flex",flexDirection:"row",gap:10,width:"100%",alignItems:"center",justifyContent:"center"}}>
                                     {
-                                        takePhoto?
+                                        takePhoto1?
                                             <img
+                                            id='photo1'
                                             // src={URL.createObjectURL(takePhoto)} //open if using file input
-                                            src={takePhoto} // open if using web cam
-                                            style={{maxWidth:"100%",height:150,alignSelf:"center",cursor:"pointer"}}
-                                            onLoad={() => URL.revokeObjectURL(takePhoto)}
+                                            src={takePhoto1} // open if using web cam
+                                            style={{width:"30%",height:150,alignSelf:"center",cursor:"pointer"}}
+                                            onLoad={() => URL.revokeObjectURL(takePhoto1)}
                                             // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
-                                            onClick={()=>openWebcamWindow()}/> // open if using web cam
+                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
                                         :
                                             <MdAddAPhoto style={{width:100,height:150,alignSelf:"center",cursor:"pointer"}}
                                             // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
-                                            onClick={()=>openWebcamWindow()}/> // open if using web cam
+                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
+                                    }
+                                    {
+                                        takePhoto2 &&
+                                            <img
+                                            id='photo2'
+                                            // src={URL.createObjectURL(takePhoto)} //open if using file input
+                                            src={takePhoto2} // open if using web cam
+                                            style={{width:"30%",height:150,alignSelf:"center",cursor:"pointer"}}
+                                            onLoad={() => URL.revokeObjectURL(takePhoto2)}
+                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
+                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
+                                    }
+                                    {
+                                        takePhoto3 &&
+                                            <img
+                                            id='photo3'
+                                            // src={URL.createObjectURL(takePhoto)} //open if using file input
+                                            src={takePhoto3} // open if using web cam
+                                            style={{width:"30%",height:150,alignSelf:"center",cursor:"pointer"}}
+                                            onLoad={() => URL.revokeObjectURL(takePhoto3)}
+                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
+                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
                                     }
                                     {/* <input type="file" id="fileInput" style={{display: "none"}} onChange={handlePhotoChange} /> open if using file input*/}
+                                    </div>
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="Name">
+                                    <Form.Label>Username</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Jack0123"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        autoFocus
+                                    />
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="Name">
@@ -257,7 +321,6 @@ export default function Register() {
                                         placeholder="jack"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        autoFocus
                                     />
                                 </Form.Group>
 
@@ -283,7 +346,7 @@ export default function Register() {
 
                                 <Form.Group className="mb-3" controlId="gender">
                                     <Form.Label>Gender</Form.Label>
-                                    <select class="form-select" value={gender} id="genderSelect" onChange={(e) => setGender(e.target.value)}>
+                                    <select className="form-select" value={gender} id="genderSelect" onChange={(e) => setGender(e.target.value)}>
                                         <option value="" disabled>Select...</option>
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
@@ -294,16 +357,17 @@ export default function Register() {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={()=>{setRegisterCustomerModel(false);resetInfo()}}>
+                        <Button variant="secondary" onClick={()=>{setRegisterCustomerModel(false);resetInfo();webcamWindowControl("close")}}>
                             Close
                         </Button>
                         <Button variant="primary"
                             disabled={
+                                !username.trim() ||
                                 !name.trim() ||
                                 !email.trim() ||
                                 !phone.trim() ||
                                 !gender.trim() ||
-                                !takePhoto
+                                !takePhoto1
                             }
                             onClick={()=>{registerCustomer()}}>
                             Add Customer
@@ -332,7 +396,7 @@ export default function Register() {
                                     customerList.map((customer)=>{
                                         return(
                                             <div key={customer.id} style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                                <img src={customer.photo} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center", objectFit:"cover"}}/>
+                                                <img src={customer.photo1_url} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center", objectFit:"cover"}}/>
                                                 <div style={{display:"flex",flexDirection:"column",width:"80%",height:"100%",justifyContent:"center"}}>
                                                     <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold"}}>
                                                         {customer.name}

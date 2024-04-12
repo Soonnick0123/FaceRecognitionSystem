@@ -130,7 +130,7 @@ export default function About() {
                             <div className={`${startCapture ? 'container-fade-in' : 'container-fade-out'}`} style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",position:"absolute",left:0,transition:"all 0.5s",paddingLeft:60}}>
                                 <div style={{height:"86%",background:"rgba(255, 255, 255, 0.85)",borderRadius:"20px",padding:25,position:"absolute"}}>
                                     {/* 待定 */}
-                                    {/* <div style={{width:"50vw",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                    <div style={{width:"50vw",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
                                         <div style={{display:"flex",flexDirection:"row"}}>
                                             <div style={{fontSize:"2rem",fontWeight:"bold",color:"gray",fontFamily:"Poppins"}}>Wait for Recognition</div>
                                             <ul className='waitingdot'>
@@ -139,9 +139,9 @@ export default function About() {
                                                 <li></li>
                                             </ul>
                                         </div>
-                                    </div> */}
+                                    </div>
 
-                                    <div style={{height:"100%",display:"flex",flexDirection:"row",gap:10,transition:"all 0.5s"}}>
+                                    {/* <div style={{height:"100%",display:"flex",flexDirection:"row",gap:10,transition:"all 0.5s"}}>
                                         <div style={{width:"40vw",display:"flex",flexDirection:"column",gap:20,padding:15,overflow:"auto"}}>
 
                                             <div style={{width:"100%",display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
@@ -202,7 +202,7 @@ export default function About() {
                                                 </Button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

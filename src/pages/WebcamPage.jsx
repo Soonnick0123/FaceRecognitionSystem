@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 import * as faceapi from 'face-api.js';
 
 const WebcamPage = () => {
+    const modelLoaded = useRef(false);
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
     const [initialTime, setInitialTime] = useState(null);
@@ -13,23 +14,21 @@ const WebcamPage = () => {
         facingMode: "user"
     };
 
-    const capturePhoto = () => {
+    const capturePhoto = (photoNumber) => {
         const imageSrc = webcamRef.current.getScreenshot();
         if (window.opener && !window.opener.closed) {
-            window.opener.receivePhotoFromWebcam(imageSrc);
-            window.close();
+            window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
         }
     };
 
     useEffect(() => {
         let countdown = 3;
+        let photoCount = 0;
         let countdownStarted = false;
         let timeoutId = null;
 
         const loadModels = async () => {
-            console.log('Loading models...');
             await faceapi.loadTinyFaceDetectorModel('/models');
-            console.log('Models loaded successfully.');
         };
 
         const video = webcamRef.current.video;
@@ -48,7 +47,7 @@ const WebcamPage = () => {
                 // 清除上一帧的绘制
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-                if (detections.length > 0) {
+                if (detections.length > 0 && photoCount < 3) {
                     if (!countdownStarted) {
                         countdownStarted = true;
 
@@ -59,10 +58,17 @@ const WebcamPage = () => {
                                 console.log(countdown);
                             } else {
                                 clearInterval(timeoutId);
-                                capturePhoto();
+                                capturePhoto(photoCount);
+                                photoCount += 1;
                                 countdown = 3;
                                 countdownStarted = false;
-                                console.log('Photo captured');
+                                console.log('Photo captured',photoCount);
+                                if (photoCount === 3) {
+                                    if (window.opener && !window.opener.closed) {
+                                        window.close();  // 拍摄完成后关闭窗口
+                                    }
+                                    return;
+                                }
                             }
                         }, 1000);
                     }
@@ -83,6 +89,7 @@ const WebcamPage = () => {
         };
 
         loadModels().then(detectAndDraw);
+
         return () => {
             clearInterval(timeoutId); // 清理定时器
         };
