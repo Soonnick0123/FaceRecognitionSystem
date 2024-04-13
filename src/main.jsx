@@ -46,26 +46,26 @@ const router = createBrowserRouter([
 
 // POP UP Message
 toastr.options = {
-    closeButton: true, // 显示关闭按钮
-    debug: false, // 是否开启debug模式
-    newestOnTop: false, // 新的通知是否排在顶部
-    progressBar: true, // 是否显示进度条
-    positionClass: 'toast-top-right', // 通知出现的位置
-    preventDuplicates: false, // 是否阻止显示重复的通知
-    onclick: null, // 点击通知时的回调函数
-    showDuration: '500', // 显示动画的持续时间（毫秒）
-    hideDuration: '1000', // 隐藏动画的持续时间（毫秒）
-    timeOut: '5000', // 通知自动关闭的延迟时间（毫秒）
-    extendedTimeOut: '1000', // 用户鼠标悬停时增加的延迟关闭时间（毫秒）
-    showEasing: 'swing', // 显示动画的缓动效果
-    hideEasing: 'linear', // 隐藏动画的缓动效果
-    showMethod: 'fadeIn', // 显示动画的方法
-    hideMethod: 'fadeOut' // 隐藏动画的方法
+    closeButton: true,
+    debug: false,
+    newestOnTop: true,
+    progressBar: true,
+    positionClass: 'toast-top-right', // notification position
+    preventDuplicates: false, // prevent duplicates notification
+    onclick: null, // Callback function when notification is clicked
+    showDuration: '500',
+    hideDuration: '1000', //hide animation duration
+    timeOut: '5000', // Delay for notification to automatically close
+    extendedTimeOut: '1000', // Added delay to close time on user mouseover (milliseconds)
+    showEasing: 'swing',
+    hideEasing: 'linear',
+    showMethod: 'fadeIn',
+    hideMethod: 'fadeOut'
 };
 
 //Custom Setting
-// toastr.success('特别的成功消息', '特别成功', {
-//     timeOut: 10000 // 仅对这个通知，设置10秒后自动关闭
+// toastr.success('custom success', 'Success', {
+//     timeOut: 10000
 // });
 
 

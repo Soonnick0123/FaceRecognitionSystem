@@ -23,7 +23,6 @@ const WebcamPage = () => {
             if(type === "register") window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
             else if(type === "recognition"){
                 window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
-                console.log("recognition");
             }
         }
     };
@@ -51,14 +50,14 @@ const WebcamPage = () => {
                 const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
                 const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
-                // 清除上一帧的绘制
+                // clear previous draw
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
                 if (detections.length > 0 && photoCount > 0) {
                     if (!countdownStarted) {
                         countdownStarted = true;
 
-                        // 每秒更新倒计时并重新检测人脸
+                        // if the count reset then redo the detection
                         timeoutId = setInterval(() => {
                             if (countdown > 0) {
                                 countdown -= 1;
@@ -79,26 +78,25 @@ const WebcamPage = () => {
                             }
                         }, 1000);
                     }
-                    // 绘制边界框
                     faceapi.draw.drawDetections(canvas, resizedDetections);
                 } else {
-                    // 如果没有检测到人脸，重置倒计时和状态
+                    // if didn't detect face, reset countdown
                     if (countdownStarted) {
                         clearInterval(timeoutId);
                         countdown = 3;
                         countdownStarted = false;
-                        console.log('Countdown reset');
+                        // console.log('Countdown reset');
                     }
                 }
             }
-            // 请求下一帧
+            // Request for next frame
             requestAnimationFrame(detectAndDraw);
         };
 
         loadModels().then(detectAndDraw);
 
         return () => {
-            clearInterval(timeoutId); // 清理定时器
+            clearInterval(timeoutId);
         };
     }, []);
 
