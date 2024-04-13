@@ -8,6 +8,9 @@ const WebcamPage = () => {
     const canvasRef = useRef(null);
     const [initialTime, setInitialTime] = useState(null);
 
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+
     const videoConstraints = {
         width: 1280,
         height: 720,
@@ -17,13 +20,18 @@ const WebcamPage = () => {
     const capturePhoto = (photoNumber) => {
         const imageSrc = webcamRef.current.getScreenshot();
         if (window.opener && !window.opener.closed) {
-            window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
+            if(type === "register") window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
+            else if(type === "recognition"){
+                window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
+                console.log("recognition");
+            }
         }
     };
 
     useEffect(() => {
         let countdown = 3;
-        let photoCount = 0;
+        let photoCount = 3;
+        if(type === "recognition") photoCount = 1;
         let countdownStarted = false;
         let timeoutId = null;
 
@@ -33,7 +41,6 @@ const WebcamPage = () => {
 
         const video = webcamRef.current.video;
         const canvas = canvasRef.current;
-        // const displaySize = faceapi.matchDimensions(canvas, { width: video.videoWidth, height: video.videoHeight });
         const displaySize = { width: video.offsetWidth, height: video.offsetHeight };
         faceapi.matchDimensions(canvas, displaySize);
 
@@ -47,7 +54,7 @@ const WebcamPage = () => {
                 // 清除上一帧的绘制
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-                if (detections.length > 0 && photoCount < 3) {
+                if (detections.length > 0 && photoCount > 0) {
                     if (!countdownStarted) {
                         countdownStarted = true;
 
@@ -55,17 +62,17 @@ const WebcamPage = () => {
                         timeoutId = setInterval(() => {
                             if (countdown > 0) {
                                 countdown -= 1;
-                                console.log(countdown);
+                                // console.log(countdown);
                             } else {
                                 clearInterval(timeoutId);
                                 capturePhoto(photoCount);
-                                photoCount += 1;
+                                // console.log('Photo captured',photoCount);
+                                photoCount -= 1;
                                 countdown = 3;
                                 countdownStarted = false;
-                                console.log('Photo captured',photoCount);
-                                if (photoCount === 3) {
+                                if (photoCount === 0) {
                                     if (window.opener && !window.opener.closed) {
-                                        window.close();  // 拍摄完成后关闭窗口
+                                        window.close();
                                     }
                                     return;
                                 }
@@ -114,7 +121,6 @@ const WebcamPage = () => {
                     height: "100%"
                 }}
             />
-            {/* <button onClick={capturePhoto}>Capture Photo</button> */}
         </div>
     );
 };

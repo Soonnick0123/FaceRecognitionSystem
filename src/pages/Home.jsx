@@ -13,19 +13,7 @@ export default function About() {
     const [loading, setLoading] = useState(false);
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
 
-    const secondFunction=()=>{
-        setHostName(window.location.hostname);
-        axios.post(`${serverURL}/secondFunction`)
-            .then(response => {
-                setMessage(response.data.message);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    }
-
     useEffect(() => {
-        secondFunction();
         setMounted(true);
     }, []);
 

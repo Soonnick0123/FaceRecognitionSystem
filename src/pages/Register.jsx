@@ -10,8 +10,6 @@ import Illustration from '../assets/illustration/illustation1.png';
 import toastr from 'toastr';
 
 export default function Register() {
-    const [message, setMessage] = useState('');
-    const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [customerList, setCustomerList] = useState([]);
@@ -30,17 +28,6 @@ export default function Register() {
 
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
     let webcamWindow = null;
-
-    const secondFunction=()=>{
-        setHostName(window.location.hostname);
-        axios.post(`${serverURL}/secondFunction`)
-            .then(response => {
-                setMessage(response.data.message);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    }
 
     const getCustomerList=()=>{
         setLoading(true)
@@ -173,7 +160,7 @@ export default function Register() {
 
     const webcamWindowControl = (control) => {
         if (control === "open" && !webcamWindow) {
-            webcamWindow = window.open('/webcam', 'webcamWindow', 'width=950,height=530');
+            webcamWindow = window.open('/webcam?type=register', 'webcamWindow', 'width=950,height=530');
         } else if (control === "close" && webcamWindow) {
             webcamWindow.close();
             webcamWindow = null;
@@ -185,13 +172,13 @@ export default function Register() {
 
         window.receivePhotoFromWebcam = (photoData,photoNumber) => {
             console.log("number:",photoNumber)
-            if (photoNumber === 0) {
+            if (photoNumber === 3) {
                 setTakePhoto1(photoData);
             }
-            else if (photoNumber === 1) {
+            else if (photoNumber === 2) {
                 setTakePhoto2(photoData);
             }
-            else if (photoNumber === 2) {
+            else if (photoNumber === 1) {
                 setTakePhoto3(photoData);
             }
         };
