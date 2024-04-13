@@ -171,7 +171,6 @@ export default function Register() {
         getCustomerList();
 
         window.receivePhotoFromWebcam = (photoData,photoNumber) => {
-            console.log("number:",photoNumber)
             if (photoNumber === 3) {
                 setTakePhoto1(photoData);
             }
@@ -253,40 +252,32 @@ export default function Register() {
                                         takePhoto1?
                                             <img
                                             id='photo1'
-                                            // src={URL.createObjectURL(takePhoto)} //open if using file input
-                                            src={takePhoto1} // open if using web cam
+                                            src={takePhoto1}
                                             style={{width:"30%",height:150,alignSelf:"center",cursor:"pointer"}}
                                             onLoad={() => URL.revokeObjectURL(takePhoto1)}
-                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
-                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
+                                            onClick={()=>webcamWindowControl("open")}/>
                                         :
                                             <MdAddAPhoto style={{width:100,height:150,alignSelf:"center",cursor:"pointer"}}
-                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
-                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
+                                            onClick={()=>webcamWindowControl("open")}/>
                                     }
                                     {
                                         takePhoto2 &&
                                             <img
                                             id='photo2'
-                                            // src={URL.createObjectURL(takePhoto)} //open if using file input
-                                            src={takePhoto2} // open if using web cam
+                                            src={takePhoto2}
                                             style={{width:"30%",height:150,alignSelf:"center",cursor:"pointer"}}
                                             onLoad={() => URL.revokeObjectURL(takePhoto2)}
-                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
-                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
+                                            onClick={()=>webcamWindowControl("open")}/>
                                     }
                                     {
                                         takePhoto3 &&
                                             <img
                                             id='photo3'
-                                            // src={URL.createObjectURL(takePhoto)} //open if using file input
-                                            src={takePhoto3} // open if using web cam
+                                            src={takePhoto3}
                                             style={{width:"30%",height:150,alignSelf:"center",cursor:"pointer"}}
                                             onLoad={() => URL.revokeObjectURL(takePhoto3)}
-                                            // onClick={()=>document.getElementById('fileInput').click()}/> //open if using file input
-                                            onClick={()=>webcamWindowControl("open")}/> // open if using web cam
+                                            onClick={()=>webcamWindowControl("open")}/>
                                     }
-                                    {/* <input type="file" id="fileInput" style={{display: "none"}} onChange={handlePhotoChange} /> open if using file input*/}
                                     </div>
                                 </Form.Group>
 

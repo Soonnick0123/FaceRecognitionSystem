@@ -6,6 +6,7 @@ import LoadingScreen from '../assets/components/LoadingScreen';
 import Illustration from '../assets/illustration/illustation1.png';
 import SideBar from '../assets/components/SideBar';
 import toastr from 'toastr';
+import qs from 'qs';
 
 export default function About() {
     const [mounted, setMounted] = useState(false);
@@ -14,6 +15,9 @@ export default function About() {
     const [cameraIsHovered, setCameraIsHovered] = useState(false);
     const [startCapture, setStartCapture] = useState(false);
     const [viewInfo, setViewInfo] = useState(false);
+
+    const [recordList, setRecordList] = useState([]);
+    const [customerInfo, setCustomerInfo] = useState([]);
 
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
     let webcamWindow = null;
@@ -25,10 +29,80 @@ export default function About() {
         } else if (control === "close" && webcamWindow) {
             webcamWindow.close();
             webcamWindow = null;
+            setWaiting(false);
+        } else{
+            setWaiting(false);
         }
     };
 
+    const getLoginRecord=()=>{
+        setWaiting(true);
+        axios.post(`${serverURL}/getLoginRecord`)
+            .then(response => {
+                setRecordList(response.data.recordList);
+                setWaiting(false);
+        })
+        .catch(error => {
+            if(error.response){
+                toastr.error(error, 'Something went Wrong!');
+                setWaiting(false);
+                return
+            }
+            toastr.error(error, 'Something went Wrong!');
+            setWaiting(false);
+        });
+    }
+
+    const timeSince=(dateString)=> {
+        const date = new Date(dateString);
+        const seconds = Math.floor((Date.now() - date) / 1000);
+
+        let interval = seconds / 3600;
+        if (interval < 1) {
+            interval = seconds / 60;
+            if (interval < 1) {
+                if(seconds <= 1) return seconds + " second ago";
+                return seconds + " seconds ago";
+            }
+            if (interval < 2) return Math.floor(interval) + " minute ago";
+            return Math.floor(interval) + " minutes ago";
+        }
+        if (interval < 2) return Math.floor(interval) + " hour ago";
+        return Math.floor(interval) + " hours ago";
+    }
+
+    const deleteRecord=(recordId)=> {
+        setLoading(true);
+        const payload = {
+            recordId: recordId
+        };
+        axios
+            .post(`${serverURL}/deleteRecord`,qs.stringify(payload),{timeout:15000})
+            .then(async response => {
+                getLoginRecord();
+                setLoading(false);
+                toastr.success('Delete Record Successful!', 'Success');
+            })
+            .catch(error => {
+                if(error.response){
+                    if (error.response.status == 420) {
+                        toastr.error("Record not exist!", 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                    else {
+                        toastr.error(error, 'Something went Wrong!');
+                        setLoading(false);
+                        return
+                    }
+                }
+                toastr.error(error, 'Something went Wrong!');
+                setLoading(false)
+            });
+    }
+
     useEffect(() => {
+        getLoginRecord();
 
         window.receivePhotoFromWebcam = (photoData,photoNumber) => {
             const formData = new FormData();
@@ -40,40 +114,31 @@ export default function About() {
                         'Content-Type': 'multipart/form-data',
                     },timeout:15000})
                 .then(async response => {
+                    getLoginRecord();
+                    toastr.success('Our Member!', 'Welcome');
                     setWaiting(false);
                 })
                 .catch(error => {
                     if(error.response){
-                        if (error.response.status == 460) {
-                            toastr.error("This email have been existed!", 'Something went Wrong!');
-                            setLoading(false);
-                            return
-                        }
-                        else if (error.response.status == 490) {
-                            toastr.error("Invalid Email", 'Something went Wrong!');
-                            setLoading(false);
+                        if (error.response.status == 420) {
+                            toastr.error("Not a Member", 'Recognigtion Fail!');
+                            setWaiting(false);
                             return
                         }
                         else if (error.response.status == 440) {
-                            toastr.error("Invalid Username", 'Something went Wrong!');
-                            setLoading(false);
-                            return
-                        }
-                        else if (error.response.status == 420) {
                             toastr.error(error.response.data.error, 'Something went Wrong!');
-                            setLoading(false);
+                            setWaiting(false);
                             return
                         }
                         else {
                             toastr.error(error, 'Something went Wrong!');
-                            setLoading(false);
+                            setWaiting(false);
                             return
                         }
                     }
                     toastr.error(error, 'Something went Wrong!');
-                    setLoading(false);
+                    setWaiting(false);
             });
-            console.log("number:",photoNumber);
         };
         setMounted(true);
         return () => {
@@ -168,8 +233,8 @@ export default function About() {
                         <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",overflowX:"hidden"}}>
 
                             <div className={`${startCapture ? 'container-fade-out' : 'container-fade-in'}`} style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"15%",position:"absolute",left:0,transition:"all 0.5s",paddingLeft:60}}>
-                                {/* change here */}
-                                <div className='camera-button' style={{borderRadius:"50%",background:"rgba(255, 255, 255, 0.4)",position:"relative",cursor:"pointer"}} onMouseOver={()=>setCameraIsHovered(true)} onMouseLeave={()=>setCameraIsHovered(false)} onClick={()=>{setStartCapture(true);webcamWindowControl("open")}}>
+
+                                <div className='camera-button' style={{borderRadius:"50%",background:"rgba(255, 255, 255, 0.4)",position:"relative",cursor:"pointer"}} onMouseOver={()=>setCameraIsHovered(true)} onMouseLeave={()=>setCameraIsHovered(false)} onClick={()=>{setStartCapture(true);getLoginRecord()}}>
                                     <MdLinkedCamera className={`${cameraIsHovered ? 'fade-in' : 'fade-out'}`} style={{width:150,height:150,alignSelf:"center",color:"#2b2bff",position:"absolute",top:"25%",left:"25%"}}/>
                                     <MdCameraAlt className={`${cameraIsHovered ? 'fade-out' : 'fade-in'}`} style={{width:150,height:150,alignSelf:"center",color:"#0F0F6D",position:"absolute",top:"25%",left:"25%"}}/>
                                 </div>
@@ -178,7 +243,7 @@ export default function About() {
                             </div>
 
                             <div className={`${startCapture ? 'container-fade-in' : 'container-fade-out'}`} style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",position:"absolute",left:0,transition:"all 0.5s",paddingLeft:60}}>
-                                <div style={{height:"86%",background:"rgba(255, 255, 255, 0.85)",borderRadius:"20px",padding:25,position:"absolute"}}>
+                                <div style={{height:"86%",background:"rgba(255, 255, 255, 0.85)",borderRadius:"20px",padding:"15px 0px 25px 25px",position:"absolute"}}>
                                     {/* 待定 */}
                                     {
                                         waiting?
@@ -193,35 +258,45 @@ export default function About() {
                                             </div>
                                         </div>
                                         :
-                                        <div style={{height:"100%",display:"flex",flexDirection:"row",gap:10,transition:"all 0.5s"}}>
-                                            <div style={{width:"40vw",display:"flex",flexDirection:"column",gap:20,padding:15,overflow:"auto"}}>
+                                        <div style={{height:"100%",display:"flex",flexDirection:"row",transition:"all 0.5s"}}>
+                                            <div style={{width:"40vw",display:"flex",flexDirection:"column",gap:20,padding:15}}>
 
                                                 <div style={{width:"100%",display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-                                                    <Button variant="secondary" onClick={()=>setStartCapture(false)}>
+                                                    <Button variant="secondary" onClick={()=>{setStartCapture(false);webcamWindowControl("close")}}>
                                                         &lt; Back
                                                     </Button>
-                                                    <Button variant="primary" disabled>
+                                                    <Button variant="primary" onClick={()=>webcamWindowControl("open")}>
                                                         <MdCameraAlt/> Reopen Camera
                                                     </Button>
                                                 </div>
 
-                                                <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
-                                                    <img src={Illustration} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center"}}/>
+                                                <div style={{width:"100%",display:"flex",flexDirection:"column",gap:20,overflow:"auto",padding:10}}>
+                                                    {
+                                                        recordList &&
+                                                            recordList.map((record)=>{
+                                                                return(
+                                                                    <div style={{display:"flex",flexDirection:"row",gap:5,boxShadow:"rgba(0, 0, 0, 0.1) 5px 3px 12px 3px",padding:10,borderRadius:10}}>
+                                                                        <img src={record.customer.photo1_url} style={{userSelect:"none",width:"80px",height:"80px",borderRadius:"50%",alignSelf:"center",objectFit:"cover"}}/>
 
-                                                    <div style={{display:"flex",flexDirection:"row",width:"84%",height:"100%",alignItems:"center",justifyContent:"space-between",paddingLeft:10}}>
-                                                        <div style={{width:"100%",display:"flex",flexDirection:"row",fontWeight:"bold",fontSize:"1.3rem"}}>
-                                                            Name
-                                                        </div>
+                                                                        <div style={{display:"flex",flexDirection:"row",width:"84%",height:"100%",alignItems:"center",justifyContent:"space-between",paddingLeft:10}}>
+                                                                            <div style={{width:"100%",display:"flex",flexDirection:"column",fontWeight:"bold",fontSize:"1.3rem",gap:5}}>
+                                                                                <div style={{fontWeight:"bold",fontSize:"1.0rem"}}>{record.customer.name}</div>
+                                                                                <div style={{fontWeight:"bold",fontSize:"0.8rem",color:"grey"}}>{timeSince(record.login_time)}</div>
+                                                                            </div>
 
-                                                        <div style={{display:"flex",flexDirection:"column",gap:5,padding:"10px 0px"}}>
-                                                            <Button variant="primary" onClick={()=>setViewInfo(true)}>
-                                                                View
-                                                            </Button>
-                                                            <Button variant="danger">
-                                                                Remove
-                                                            </Button>
-                                                        </div>
-                                                    </div>
+                                                                            <div style={{display:"flex",flexDirection:"column",gap:5,padding:"10px 0px"}}>
+                                                                                <Button variant="primary" onClick={()=>{setViewInfo(true);setCustomerInfo(record.customer)}}>
+                                                                                    View
+                                                                                </Button>
+                                                                                <Button variant="danger" onClick={()=> deleteRecord(record.id)}>
+                                                                                    Remove
+                                                                                </Button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            })
+                                                    }
                                                 </div>
                                             </div>
 
@@ -230,23 +305,23 @@ export default function About() {
 
                                                 <div style={{display:"flex",flexDirection:"column",gap:5}}>
                                                     <div style={{fontWeight:"bold",fontSize:"1.5rem"}}>Name:</div>
-                                                    <div>John Bryan Leee</div>
+                                                    <div>{customerInfo.name}</div>
                                                 </div>
 
                                                 <div style={{display:"flex",flexDirection:"column",gap:5}}>
                                                     <div style={{fontWeight:"bold",fontSize:"1.5rem"}}>Email:</div>
-                                                    <div>example@.gmail.com</div>
+                                                    <div>{customerInfo.email}</div>
                                                 </div>
 
                                                 <div style={{display:"flex",flexDirection:"column",gap:5}}>
                                                     <div style={{fontWeight:"bold",fontSize:"1.5rem"}}>Phone:</div>
-                                                    <div>+60123456789</div>
+                                                    <div>{customerInfo.phone}</div>
                                                 </div>
 
                                                 <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"flex-end"}}>
                                                     <div style={{display:"flex",flexDirection:"column",gap:5}}>
                                                         <div style={{fontWeight:"bold",fontSize:"1.5rem"}}>Gender:</div>
-                                                        <div>Male</div>
+                                                        <div>{customerInfo.gender}</div>
                                                     </div>
 
                                                     <Button variant="secondary" style={{height:"65%"}} onClick={()=>setViewInfo(false)}>
