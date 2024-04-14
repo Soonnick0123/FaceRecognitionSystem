@@ -104,7 +104,7 @@ export default function About() {
     useEffect(() => {
         getLoginRecord();
 
-        window.receivePhotoFromWebcam = (photoData,photoNumber) => {
+        window.receivePhotoFromWebcam = (photoData) => {
             const formData = new FormData();
             formData.append("photo", photoData);
 
@@ -301,7 +301,7 @@ export default function About() {
                                             </div>
 
                                             <div style={{width:viewInfo?"25vw":0,transition:"width 0.5s, opacity 0.3s",opacity:viewInfo?1:0,borderLeft:"solid lightgrey",padding:10,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-                                                <img className='illustration' src={Illustration} style={{userSelect:"none",maxWidth:"90%",maxHeight:"50%"}}/>
+                                                <img className='illustration' src={customerInfo.photo1_url} style={{userSelect:"none",maxWidth:"90%",maxHeight:"50%",objectFit:"cover"}}/>
 
                                                 <div style={{display:"flex",flexDirection:"column",gap:5}}>
                                                     <div style={{fontWeight:"bold",fontSize:"1.5rem"}}>Name:</div>

@@ -172,6 +172,7 @@ export default function Register() {
 
         window.receivePhotoFromWebcam = (photoData,photoNumber) => {
             if (photoNumber === 3) {
+                console.log(photoData);
                 setTakePhoto1(photoData);
             }
             else if (photoNumber === 2) {

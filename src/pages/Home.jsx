@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import '../App.css';
+import {Modal, Button} from 'react-bootstrap';
 import LoadingScreen from '../assets/components/LoadingScreen';
 import SideBar from '../assets/components/SideBar';
 import Illustration from '../assets/illustration/illustation1.png';
@@ -11,6 +12,8 @@ export default function About() {
     const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [learnMoreModal, setLearnMoreModel] = useState(false);
+
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
 
     useEffect(() => {
@@ -114,6 +117,28 @@ export default function About() {
                             opacity: 0;
                             animation: thirdFadeIn 2s forwards;
                             animation-delay: 4.2s;
+                        }
+
+                        .learn-more {
+                            h2 {
+                                font-size: 1.5rem;
+                            }
+
+                            p {
+                                font-size: 0.8rem;
+                            }
+
+                            ol {
+                                font-size: 0.8rem;
+                            }
+
+                            dl {
+                                font-size: 0.8rem;
+                            }
+
+                            ul {
+                                font-size: 0.8rem;
+                            }
                         }
 
 
@@ -261,6 +286,69 @@ export default function About() {
                     `}
                 </style>
 
+                <Modal show={learnMoreModal} onHide={()=> {setLearnMoreModel(false)}} size="lg"  aria-labelledby="example-modal-sizes-title-lg">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Learn More</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body style={{height:"75vh",overflow:"auto"}}>
+                        <div className='learn-more' style={{width:"100%",height:"100%",padding:10,display:"flex",flexDirection:"column",gap:10,textAlign:"justify",fontFamily: 'Poppins'}}>
+
+                            <section id="tech-explanation">
+                                <h2>About System</h2>
+                                <p>
+                                    This system is used for user registration and customer identification through facial recognition. The system is designed to improve customer management and streamline business operations in high-frequency commercial environments such as restaurants and supermarkets. Furthermore, the project strives to bridge the gap between academic research and practical implementation of facial recognition technology in different fields.
+                                </p>
+                            </section>
+
+                            <section id="user-guide">
+                                <h2>User Guide</h2>
+                                <ol style={{paddingLeft:"1rem"}}>
+                                    <li><strong>Registration and Setup:</strong> First, users need to register an account and upload <strong>3</strong> clear facial photo to the database.</li>
+                                    <li><strong>Performing Facial Scan:</strong> Users can log in with a facial scan by using a compatible device. Ensure you are in a well-lit environment and face the camera directly.</li>
+                                    <li><strong>Results and Feedback:</strong> The system analyzes facial features in real time and compares them with your template, completing verification within a few seconds. If the return is true, the login is considered successful.</li>
+                                </ol>
+                            </section>
+
+                            <section id="privacy-policy">
+                                <h2>Privacy and Security Policy</h2>
+                                <p>
+                                    We value user privacy and data security. All facial data is encrypted and stored on highly protected servers. We promise not to sell your data to third parties or use it for unauthorized purposes.
+                                </p>
+                            </section>
+
+                            <section id="faq">
+                                <h2>Frequently Asked Questions (FAQ)</h2>
+                                <dl>
+                                    <dt>How accurate is facial recognition technology?</dt>
+                                    <dd>Our system uses advanced algorithms with an accuracy higher than 75%, effectively resisting photo or video spoofing attacks.</dd>
+
+                                    <dt>Can I delete my facial data?</dt>
+                                    <dd>Users can completely delete their facial recognition data.</dd>
+
+                                    <dt>Is facial recognition technology effective in low light?</dt>
+                                    <dd>Our technology is designed to account for various lighting conditions, but for optimal results, we recommend using it in natural light or well-lit settings.</dd>
+                                </dl>
+                            </section>
+
+                            <section id="contact-support">
+                                <h2>Contact and Support</h2>
+                                <p>Need help? Contact us with the email below:</p>
+                                <ul>
+                                    <li><strong>Chong Yew Soon:</strong> tp064768@mail.apu.my</li>
+                                    <li><strong>How Yan Han:</strong> tp0643658@mail.apu.my</li>
+                                </ul>
+                            </section>
+                        </div>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={()=>{setLearnMoreModel(false)}}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
                 <div className='frs-container'>
                     {loading && <LoadingScreen zIndex={2}/>}
                     <SideBar currentPage={'home'} />
@@ -277,7 +365,7 @@ export default function About() {
                                 <p>In Customer Relationship Management</p>
                             </div>
 
-                            <div style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"center",marginTop:"5%"}}>
+                            <div style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"center",marginTop:"5%"}} onClick={()=>setLearnMoreModel(true)}>
                                 <div className="btn-1">Learn More<span className="material-symbols-outlined">book</span></div>
                             </div>
 
