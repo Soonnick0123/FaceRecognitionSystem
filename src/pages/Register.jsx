@@ -82,7 +82,7 @@ export default function Register() {
             .catch(error => {
                 if(error.response){
                     if (error.response.status == 460) {
-                        toastr.error("This email have been existed!", 'Something went Wrong!');
+                        toastr.error("This user has been existed!", 'Something went Wrong!');
                         setLoading(false);
                         return
                     }

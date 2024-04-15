@@ -1,6 +1,6 @@
 import faceidicon from '../icon/faceIdIcon.svg';
 
-export default function LoadingScreen({ zIndex = 999, position = "fixed" }) {
+export default function LoadingScreen({ zIndex = 9999, position = "fixed" }) {
 
     return(
         <>
