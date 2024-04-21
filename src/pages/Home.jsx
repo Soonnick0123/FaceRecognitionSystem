@@ -335,8 +335,8 @@ export default function About() {
                                 <h2>Contact and Support</h2>
                                 <p>Need help? Contact us with the email below:</p>
                                 <ul>
-                                    <li><strong>Chong Yew Soon:</strong> tp064768@mail.apu.my</li>
-                                    <li><strong>How Yan Han:</strong> tp0643658@mail.apu.my</li>
+                                    <li><strong>Chong Yew Soon:</strong> tp064768@mail.apu.edu.my</li>
+                                    <li><strong>How Yan Han:</strong> tp0643658@mail.apu.edu.my</li>
                                 </ul>
                             </section>
                         </div>

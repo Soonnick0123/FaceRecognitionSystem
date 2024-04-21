@@ -266,7 +266,7 @@ export default function About() {
                                                         &lt; Back
                                                     </Button>
                                                     <Button variant="primary" onClick={()=>webcamWindowControl("open")}>
-                                                        <MdCameraAlt/> Reopen Camera
+                                                        <MdCameraAlt/> Open Camera
                                                     </Button>
                                                 </div>
 
