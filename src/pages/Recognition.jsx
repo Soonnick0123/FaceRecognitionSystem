@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import {Modal, Button, Form} from 'react-bootstrap';
 import { MdLinkedCamera, MdCameraAlt } from "react-icons/md";
 import LoadingScreen from '../assets/components/LoadingScreen';
-import Illustration from '../assets/illustration/illustation1.png';
 import SideBar from '../assets/components/SideBar';
 import toastr from 'toastr';
 import qs from 'qs';
@@ -20,15 +19,15 @@ export default function About() {
     const [customerInfo, setCustomerInfo] = useState([]);
 
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
-    let webcamWindow = null;
+    const webcamWindowRef = useRef(null);
 
     const webcamWindowControl = (control) => {
         setWaiting(true);
-        if (control === "open" && !webcamWindow) {
-            webcamWindow = window.open('/webcam?type=recognition', 'webcamWindow', 'width=950,height=530');
-        } else if (control === "close" && webcamWindow) {
-            webcamWindow.close();
-            webcamWindow = null;
+        if (control === "open" && !webcamWindowRef.current) {
+            webcamWindowRef.current = window.open('/webcam?type=recognition', 'webcamWindow', 'width=950,height=530');
+        } else if (control === "close" && webcamWindowRef.current) {
+            webcamWindowRef.current.close();
+            webcamWindowRef.current = null;
             setWaiting(false);
         } else{
             setWaiting(false);
@@ -144,6 +143,17 @@ export default function About() {
         return () => {
             delete window.receivePhotoFromWebcam;
         }
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (webcamWindowRef.current && webcamWindowRef.current.closed) {
+                setWaiting(false);
+                webcamWindowRef.current = null;
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     if(mounted){

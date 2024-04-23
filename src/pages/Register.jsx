@@ -71,7 +71,7 @@ export default function Register() {
             .post(`${serverURL}/registerCustomer`,formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                },timeout:15000})
+                },timeout:180000})
             .then(async response => {
                 resetInfo();
                 setRegisterCustomerModel(false);
@@ -402,7 +402,7 @@ export default function Register() {
                                     })
                             }
 
-                        </div>
+                        </div>+
                     </div>
 
                 </div>

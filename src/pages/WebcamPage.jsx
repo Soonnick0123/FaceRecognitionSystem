@@ -20,10 +20,11 @@ const WebcamPage = () => {
     const capturePhoto = (photoNumber) => {
         const imageSrc = webcamRef.current.getScreenshot();
         if (window.opener && !window.opener.closed) {
-            if(type === "register") window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
-            else if(type === "recognition"){
-                window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
-            }
+            window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
+            // if(type === "register") window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
+            // else if(type === "recognition"){
+            //     window.opener.receivePhotoFromWebcam(imageSrc,photoNumber);
+            // }
         }
     };
 
