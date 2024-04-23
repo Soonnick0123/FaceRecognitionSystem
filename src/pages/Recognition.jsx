@@ -17,14 +17,19 @@ export default function About() {
 
     const [recordList, setRecordList] = useState([]);
     const [customerInfo, setCustomerInfo] = useState([]);
+    // const [waitingForRecognition, setWaitingForRecognition] = useState(false);
 
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
     const webcamWindowRef = useRef(null);
+    let waitingForRecognition = false;
 
     const webcamWindowControl = (control) => {
         setWaiting(true);
         if (control === "open" && !webcamWindowRef.current) {
             webcamWindowRef.current = window.open('/webcam?type=recognition', 'webcamWindow', 'width=950,height=530');
+            // setWaitingForRecognition(true);
+            waitingForRecognition = true;
+            console.log("here0",waitingForRecognition)
         } else if (control === "close" && webcamWindowRef.current) {
             webcamWindowRef.current.close();
             webcamWindowRef.current = null;
@@ -104,6 +109,7 @@ export default function About() {
         getLoginRecord();
 
         window.receivePhotoFromWebcam = (photoData) => {
+            waitingForRecognition = true;
             const formData = new FormData();
             formData.append("photo", photoData);
 
@@ -116,27 +122,32 @@ export default function About() {
                     getLoginRecord();
                     toastr.success('Our Member!', 'Welcome');
                     setWaiting(false);
+                    waitingForRecognition = false;
                 })
                 .catch(error => {
                     if(error.response){
                         if (error.response.status == 420) {
                             toastr.error("Not a Member", 'Recognigtion Fail!');
                             setWaiting(false);
+                            waitingForRecognition = false;
                             return
                         }
                         else if (error.response.status == 440) {
                             toastr.error(error.response.data.error, 'Something went Wrong!');
                             setWaiting(false);
+                            waitingForRecognition = false;
                             return
                         }
                         else {
                             toastr.error(error, 'Something went Wrong!');
                             setWaiting(false);
+                            waitingForRecognition = false;
                             return
                         }
                     }
                     toastr.error(error, 'Something went Wrong!');
                     setWaiting(false);
+                    waitingForRecognition = false;
             });
         };
         setMounted(true);
@@ -147,7 +158,7 @@ export default function About() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (webcamWindowRef.current && webcamWindowRef.current.closed) {
+            if (webcamWindowRef.current && webcamWindowRef.current.closed && !waitingForRecognition) {
                 setWaiting(false);
                 webcamWindowRef.current = null;
             }
