@@ -27,9 +27,7 @@ export default function About() {
         setWaiting(true);
         if (control === "open" && !webcamWindowRef.current) {
             webcamWindowRef.current = window.open('/webcam?type=recognition', 'webcamWindow', 'width=950,height=530');
-            // setWaitingForRecognition(true);
             waitingForRecognition = true;
-            console.log("here0",waitingForRecognition)
         } else if (control === "close" && webcamWindowRef.current) {
             webcamWindowRef.current.close();
             webcamWindowRef.current = null;

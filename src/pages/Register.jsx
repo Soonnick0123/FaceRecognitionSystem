@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
 import { MdAddAPhoto } from "react-icons/md";
 import { IoPersonRemove } from "react-icons/io5";
@@ -27,7 +27,7 @@ export default function Register() {
     const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
 
     const serverURL = "http://127.0.0.1:8000/RecognitionApp"
-    let webcamWindow = null;
+    const webcamWindowRef = useRef(null);
 
     const getCustomerList=()=>{
         setLoading(true)
@@ -159,11 +159,11 @@ export default function Register() {
     }
 
     const webcamWindowControl = (control) => {
-        if (control === "open" && !webcamWindow) {
-            webcamWindow = window.open('/webcam?type=register', 'webcamWindow', 'width=950,height=530');
-        } else if (control === "close" && webcamWindow) {
-            webcamWindow.close();
-            webcamWindow = null;
+        if (control === "open" && !webcamWindowRef.current) {
+            webcamWindowRef.current = window.open('/webcam?type=register', 'webcamWindow', 'width=950,height=530');
+        } else if (control === "close" && webcamWindowRef.current) {
+            webcamWindowRef.current.close();
+            webcamWindowRef.current = null;
         }
     };
 
@@ -172,7 +172,6 @@ export default function Register() {
 
         window.receivePhotoFromWebcam = (photoData,photoNumber) => {
             if (photoNumber === 3) {
-                console.log(photoData);
                 setTakePhoto1(photoData);
             }
             else if (photoNumber === 2) {
@@ -186,6 +185,16 @@ export default function Register() {
         return () => {
             delete window.receivePhotoFromWebcam;
         }
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (webcamWindowRef.current && webcamWindowRef.current.closed) {
+                webcamWindowRef.current = null;
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     if(mounted){

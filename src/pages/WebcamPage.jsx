@@ -7,6 +7,8 @@ const WebcamPage = () => {
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
     const [initialTime, setInitialTime] = useState(null);
+    const [countdownDis, setCountDownDis] = useState(3);
+    const [countdownStartedDis, setCountDownStartedDis] = useState(false);
 
     const params = new URLSearchParams(window.location.search);
     const type = params.get('type');
@@ -29,10 +31,10 @@ const WebcamPage = () => {
     };
 
     useEffect(() => {
-        let countdown = 3;
         let photoCount = 3;
-        if(type === "recognition") photoCount = 1;
+        let countdown = 3;
         let countdownStarted = false;
+        if(type === "recognition") photoCount = 1;
         let timeoutId = null;
 
         const loadModels = async () => {
@@ -57,11 +59,13 @@ const WebcamPage = () => {
                 if (detections.length > 0 && photoCount > 0) {
                     if (!countdownStarted) {
                         countdownStarted = true;
+                        setCountDownStartedDis(true);
 
                         // if the count reset then redo the detection
                         timeoutId = setInterval(() => {
                             if (countdown > 0) {
                                 countdown -= 1;
+                                setCountDownDis(countdown);
                                 // console.log(countdown);
                             } else {
                                 clearInterval(timeoutId);
@@ -69,7 +73,9 @@ const WebcamPage = () => {
                                 // console.log('Photo captured',photoCount);
                                 photoCount -= 1;
                                 countdown = 3;
+                                setCountDownDis(countdown);
                                 countdownStarted = false;
+                                setCountDownStartedDis(false);
                                 if (photoCount === 0) {
                                     if (window.opener && !window.opener.closed) {
                                         window.close();
@@ -85,7 +91,9 @@ const WebcamPage = () => {
                     if (countdownStarted) {
                         clearInterval(timeoutId);
                         countdown = 3;
+                        setCountDownDis(countdown);
                         countdownStarted = false;
+                        setCountDownStartedDis(false);
                         // console.log('Countdown reset');
                     }
                 }
@@ -120,6 +128,10 @@ const WebcamPage = () => {
                     height: "100%"
                 }}
             />
+            {
+                countdownStartedDis &&
+                    <div style={{position: "absolute", top:"40%", left:"50%",color:"#fff",fontSize:"6rem"}}>{countdownDis}</div>
+            }
         </div>
     );
 };
