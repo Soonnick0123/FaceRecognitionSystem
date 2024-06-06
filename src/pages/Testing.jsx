@@ -7,7 +7,9 @@ export default function About() {
     const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(true);
-    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
+
+    const serverURL = "https://hip-apricot-425015-t5.df.r.appspot.com/RecognitionApp"
+    // const serverURL = "http://127.0.0.1:8000/RecognitionApp"
 
     const secondFunction=()=>{
         setHostName(window.location.hostname);
