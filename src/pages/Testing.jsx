@@ -56,7 +56,7 @@ export default function About() {
 
                 {loading && <LoadingScreen />}
                 <div style={{backgroundColor:"#fff",width:"100vw",height:"100vh", color:"black"}}>
-                    <h1 style={{marginTop:"0"}}>Testing Pageseeee</h1>
+                    <h1 style={{marginTop:"0"}}>Testing Pages</h1>
                     <p>{message}</p>
                 </div>
             </>
