@@ -8,7 +8,7 @@ export default function About() {
     const [loading, setLoading] = useState(true);
     const hostName = window.location.hostname;
 
-    // let serverURL = "http://3.90.183.30/RecognitionApp";
+    let serverURL;
     // const [serverURL,setServerURL] = useState('')
 
     if(["localhost", "127.0.0.1"].includes(hostName)){
