@@ -17,7 +17,6 @@ export default function About() {
         serverURL =`https://3.90.183.30/RecognitionApp`
     }
     const secondFunction=()=>{
-        setHostName(window.location.hostname);
         axios.post(`${serverURL}/secondFunction`)
             .then(response => {
                 setMessage(response.data.message);
