@@ -8,14 +8,17 @@ export default function About() {
     const [loading, setLoading] = useState(true);
     const hostName = window.location.hostname;
 
-    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
+    let serverURL = "";
+    // const [serverURL,setServerURL] = useState('')
 
     if(["localhost", "127.0.0.1"].includes(hostName)){
-        serverURL = `http://127.0.0.1:8000/RecognitionApp`
+        serverURL = 'http://127.0.0.1:8000/RecognitionApp'
+        // setServerURL('http://127.0.0.1:8000/RecognitionApp')
     }
     else{
-        serverURL =`https://3.90.183.30/RecognitionApp`
+        serverURL = 'https://3.90.183.30/RecognitionApp'
     }
+
     const secondFunction=()=>{
         axios.post(`${serverURL}/secondFunction`)
             .then(response => {
