@@ -8,7 +8,7 @@ export default function About() {
     const [loading, setLoading] = useState(true);
     const hostName = window.location.hostname;
 
-    let serverURL = "";
+    // let serverURL = "http://3.90.183.30/RecognitionApp";
     // const [serverURL,setServerURL] = useState('')
 
     if(["localhost", "127.0.0.1"].includes(hostName)){
@@ -16,7 +16,7 @@ export default function About() {
         // setServerURL('http://127.0.0.1:8000/RecognitionApp')
     }
     else{
-        serverURL = 'https://3.90.183.30/RecognitionApp'
+        serverURL = 'http://3.90.183.30/RecognitionApp'
     }
 
     const secondFunction=()=>{
