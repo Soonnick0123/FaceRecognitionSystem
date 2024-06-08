@@ -4,9 +4,11 @@ import LoadingScreen from '../assets/components/LoadingScreen';
 
 export default function About() {
     const [message, setMessage] = useState('');
-    const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(true);
+    const hostName = window.location.hostname;
+
+    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
 
     if(["localhost", "127.0.0.1"].includes(hostName)){
         serverURL = `http://127.0.0.1:8000/RecognitionApp`
