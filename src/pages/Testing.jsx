@@ -8,9 +8,14 @@ export default function About() {
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const serverURL = "https://hip-apricot-425015-t5.df.r.appspot.com/RecognitionApp"
-    // const serverURL = "http://127.0.0.1:8000/RecognitionApp"
+    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
 
+    if(["localhost", "127.0.0.1"].includes(hostName)){
+        databaseURL = `http://127.0.0.1:8000/RecognitionApp`
+    }
+    else{
+        databaseURL =`https://3.90.183.30/RecognitionApp`
+    }
     const secondFunction=()=>{
         setHostName(window.location.hostname);
         axios.post(`${serverURL}/secondFunction`)
