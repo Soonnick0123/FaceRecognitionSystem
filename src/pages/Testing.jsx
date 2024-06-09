@@ -16,7 +16,7 @@ export default function About() {
         // setServerURL('http://127.0.0.1:8000/RecognitionApp')
     }
     else{
-        serverURL = 'http://3.90.183.30/RecognitionApp'
+        serverURL = 'https://soonnick.com/RecognitionApp'
     }
 
     const secondFunction=()=>{
