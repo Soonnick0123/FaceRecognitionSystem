@@ -19,7 +19,16 @@ export default function About() {
     const [customerInfo, setCustomerInfo] = useState([]);
     // const [waitingForRecognition, setWaitingForRecognition] = useState(false);
 
-    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
+    const hostName = window.location.hostname;
+
+    let serverURL;
+    if(["localhost", "127.0.0.1"].includes(hostName)){
+        serverURL = 'http://127.0.0.1:8000/RecognitionApp'
+    }
+    else{
+        serverURL = 'https://soonnick.com/RecognitionApp'
+    }
+    
     const webcamWindowRef = useRef(null);
     let waitingForRecognition = false;
 

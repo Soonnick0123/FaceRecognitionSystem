@@ -23,10 +23,18 @@ export default function Register() {
     const [takePhoto2, setTakePhoto2] = useState(null);
     const [takePhoto3, setTakePhoto3] = useState(null);
 
+    const hostName = window.location.hostname;
+
+    let serverURL;
+    if(["localhost", "127.0.0.1"].includes(hostName)){
+        serverURL = 'http://127.0.0.1:8000/RecognitionApp'
+    }
+    else{
+        serverURL = 'https://soonnick.com/RecognitionApp'
+    }
 
     const [registerCustomerModel, setRegisterCustomerModel] = useState(false);
 
-    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
     const webcamWindowRef = useRef(null);
 
     const getCustomerList=()=>{

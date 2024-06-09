@@ -9,12 +9,18 @@ import axios from 'axios';
 
 export default function About() {
     const [message, setMessage] = useState('');
-    const [hostName, setHostName] = useState('');
     const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [learnMoreModal, setLearnMoreModel] = useState(false);
+    const hostName = window.location.hostname;
 
-    const serverURL = "http://127.0.0.1:8000/RecognitionApp"
+    let serverURL;
+    if(["localhost", "127.0.0.1"].includes(hostName)){
+        serverURL = 'http://127.0.0.1:8000/RecognitionApp'
+    }
+    else{
+        serverURL = 'https://soonnick.com/RecognitionApp'
+    }
 
     useEffect(() => {
         setMounted(true);

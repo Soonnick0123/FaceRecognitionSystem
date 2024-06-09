@@ -9,11 +9,8 @@ export default function About() {
     const hostName = window.location.hostname;
 
     let serverURL;
-    // const [serverURL,setServerURL] = useState('')
-
     if(["localhost", "127.0.0.1"].includes(hostName)){
         serverURL = 'http://127.0.0.1:8000/RecognitionApp'
-        // setServerURL('http://127.0.0.1:8000/RecognitionApp')
     }
     else{
         serverURL = 'https://soonnick.com/RecognitionApp'
