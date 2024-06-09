@@ -139,7 +139,7 @@ export default function Register() {
             customerId: customerId
         };
         axios
-            .post(`${serverURL}/deleteCustomer`,qs.stringify(payload),{timeout:15000})
+            .post(`${serverURL}/deleteCustomer`,qs.stringify(payload),{timeout:180000})
             .then(async response => {
                 getCustomerList();
                 setLoading(false);
