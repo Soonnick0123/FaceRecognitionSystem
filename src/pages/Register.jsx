@@ -28,8 +28,10 @@ export default function Register() {
     let serverURL;
     if(["localhost", "127.0.0.1"].includes(hostName)){
         serverURL = 'http://127.0.0.1:8000/RecognitionApp'
+        console.log(hostName)
     }
     else{
+        console.log(hostName)
         serverURL = 'https://soonnick.com/RecognitionApp'
     }
 
