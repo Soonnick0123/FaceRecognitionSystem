@@ -14,6 +14,7 @@ export default function About() {
     const [cameraIsHovered, setCameraIsHovered] = useState(false);
     const [startCapture, setStartCapture] = useState(false);
     const [viewInfo, setViewInfo] = useState(false);
+    const [openCameraHover, setOpenCameraHover] = useState(false);
 
     const [recordList, setRecordList] = useState([]);
     const [customerInfo, setCustomerInfo] = useState([]);
@@ -28,7 +29,7 @@ export default function About() {
     else{
         serverURL = 'https://soonnick.com/RecognitionApp'
     }
-    
+
     const webcamWindowRef = useRef(null);
     let waitingForRecognition = false;
 
@@ -211,6 +212,36 @@ export default function About() {
                             z-index: 0;
                         }
 
+                        .bubble {
+                            height: auto;
+                            width: 355px;
+                            background: white;
+                            display: block;
+                            border-radius: 20px;
+                            text-align: center;
+                            color: black;
+                            z-index: 1;
+                            padding: 5px;
+                            font-size: 0.8rem;
+
+                            p {
+                                margin: 0px;
+                            }
+                        }
+
+                        .pointer {
+                            height: 20px;
+                            width: 20px;
+                            background: white;
+                            margin: 0 auto;
+                            transform: rotate(45deg);
+                            border-radius: 0 0 2px 0;
+                            margin-top: -10px;
+                            position: relative;
+                            left: 0.5vw;
+                            z-index: -1;
+                        }
+
                         .waitingdot{
                             display: flex;
                             flex-direction: row;
@@ -293,8 +324,15 @@ export default function About() {
                                                     <Button variant="secondary" onClick={()=>{setStartCapture(false);webcamWindowControl("close")}}>
                                                         &lt; Back
                                                     </Button>
-                                                    <Button variant="primary" onClick={()=>webcamWindowControl("open")}>
+                                                    <Button onClick={()=>webcamWindowControl("close")} style={{position:"relative",backgroundColor:"gainsboro",cursor:"not-allowed",borderColor:"gainsboro"}} onMouseOver={()=>setOpenCameraHover(true)}>
                                                         <MdCameraAlt/> Open Camera
+                                                        {
+                                                            openCameraHover &&
+                                                                <div style={{position:"absolute",top:"-240%",left:"-80%"}} onMouseOver={()=>setOpenCameraHover(true)} onMouseLeave={()=>setOpenCameraHover(false)}>
+                                                                    <div class="bubble"><p>Due to server performance issues, this feature is currently unavailable. If you would like to experience this feature, please visit my <a href="https://github.com/Soonnick0123?tab=repositories" target="_blank">GitHub repository</a>.</p></div>
+                                                                    <div class="pointer"></div>
+                                                                </div>
+                                                        }
                                                     </Button>
                                                 </div>
 
