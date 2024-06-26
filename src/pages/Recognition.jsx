@@ -324,15 +324,15 @@ export default function About() {
                                                     <Button variant="secondary" onClick={()=>{setStartCapture(false);webcamWindowControl("close")}}>
                                                         &lt; Back
                                                     </Button>
-                                                    <Button onClick={()=>webcamWindowControl("close")} style={{position:"relative",backgroundColor:"gainsboro",cursor:"not-allowed",borderColor:"gainsboro"}} onMouseOver={()=>setOpenCameraHover(true)}>
+                                                    <Button onClick={()=>webcamWindowControl("open")}>
                                                         <MdCameraAlt/> Open Camera
-                                                        {
+                                                        {/* {
                                                             openCameraHover &&
                                                                 <div style={{position:"absolute",top:"-240%",left:"-80%"}} onMouseOver={()=>setOpenCameraHover(true)} onMouseLeave={()=>setOpenCameraHover(false)}>
                                                                     <div class="bubble"><p>Due to server performance issues, this feature is currently unavailable. If you would like to experience this feature, please visit my <a href="https://github.com/Soonnick0123?tab=repositories" target="_blank">GitHub repository</a>.</p></div>
                                                                     <div class="pointer"></div>
                                                                 </div>
-                                                        }
+                                                        } */}
                                                     </Button>
                                                 </div>
 
